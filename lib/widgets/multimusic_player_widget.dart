@@ -6,18 +6,16 @@ import 'package:musicapp1/models/seekbar_model.dart';
 import 'package:musicapp1/providers/app_provider.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
 
-class MultiMusicPlayer extends StatefulWidget {
-  const MultiMusicPlayer(
-      {Key? key, required this.playList, this.activeSong = 0})
-      : super(key: key);
+class MultiMusicPlayer extends ConsumerStatefulWidget {
+  const MultiMusicPlayer({Key? key, required this.playList}) : super(key: key);
   final PlayList playList;
   // final Function(int)? setActiveSong;
-  final int? activeSong;
+  // final int? activeSong;
   @override
   MultiMusicPlayerState createState() => MultiMusicPlayerState();
 }
 
-class MultiMusicPlayerState extends State<MultiMusicPlayer> {
+class MultiMusicPlayerState extends ConsumerState<MultiMusicPlayer> {
   AudioPlayer player = AudioPlayer();
   int currentIndex = 0;
   @override
@@ -27,10 +25,10 @@ class MultiMusicPlayerState extends State<MultiMusicPlayer> {
     widget.playList.songs.forEach((song) {
       audioSource.add(AudioSource.uri(Uri.parse('asset:///${song.url}')));
     });
-    // print('restarted state');
+    //print('restarted state');
     // print('sent index ${widget.activeSong}');
     // currentIndex = widget.activeSong ?? 0;
-    player.setAudioSource(ConcatenatingAudioSource(children: audioSource!),
+    player.setAudioSource(ConcatenatingAudioSource(children: audioSource),
         initialIndex: currentIndex);
   }
 
@@ -51,13 +49,13 @@ class MultiMusicPlayerState extends State<MultiMusicPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    // ref.listen<int>(playerProvider, (prev, next) async {
-    //   await player.seek(const Duration(seconds: 10), index: next);
-    //   if (player.playing == false) {
-    //     player.play();
-    //   }
-    //   // print('player => next index is   $next');
-    // });
+    ref.listen<int>(playerProvider, (prev, next) async {
+      await player.seek(const Duration(seconds: 10), index: next);
+      if (player.playing == false) {
+        player.play();
+      }
+      // print('player => next index is   $next');
+    });
 
     return Row(
       children: [
@@ -85,11 +83,7 @@ class MultiMusicPlayerState extends State<MultiMusicPlayer> {
                           onPressed: () {
                             if (player.hasPrevious) {
                               player.seekToPrevious();
-
-                              // setState(() {
-                              //   player.seekToNext();
-                              //   ref.read(playerProvider.notifier).state--;
-                              // });
+                              ref.read(playerProvider.notifier).state--;
                             }
                           },
                           padding: const EdgeInsets.all(0.0),
@@ -154,7 +148,7 @@ class MultiMusicPlayerState extends State<MultiMusicPlayer> {
                           onPressed: () {
                             if (player.hasNext) {
                               player.seekToNext();
-                              // ref.read(playerProvider.notifier).state++;
+                              ref.read(playerProvider.notifier).state++;
                             }
                           },
                           icon:

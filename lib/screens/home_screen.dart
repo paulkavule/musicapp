@@ -9,7 +9,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -30,11 +29,17 @@ class HomeScreen extends StatelessWidget {
               children: [
                 TopHeader(),
                 SectionHeader(title: 'Trending music'),
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
                 TrendingSection(),
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
                 SectionHeader(title: 'Playlists'),
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
                 PlayListSection()
               ],
             ),
@@ -47,37 +52,29 @@ class HomeScreen extends StatelessWidget {
 }
 
 class PlayListSection extends StatelessWidget {
-  const PlayListSection({
-    Key? key }) : super(key: key);
-
+  const PlayListSection({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     List<PlayList> playLists = PlayList.playList;
     return ListView.builder(
-      itemCount: playLists.length,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: ((context, index){
-        return PlayListCard(playList: playLists[index]);
-      })
-    );
+        itemCount: playLists.length,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemBuilder: ((context, index) {
+          return PlayListCard(playList: playLists[index]);
+        }));
   }
 }
 
-
 class TrendingSection extends StatelessWidget {
-  const TrendingSection({
-    Key? key
-    }) : super(key: key);
-
+  const TrendingSection({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-     
     List<Song> songs = Song.songs;
     return SizedBox(
-      height: MediaQuery.of(context).size.height*0.25,
+      height: MediaQuery.of(context).size.height * 0.25,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: songs.length,
@@ -89,10 +86,9 @@ class TrendingSection extends StatelessWidget {
   }
 }
 
+class TopHeader extends StatelessWidget {
+  const TopHeader({Key? key}) : super(key: key);
 
-class TopHeader extends StatelessWidget{
-  const TopHeader({Key?key}):super(key:key);
-  
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -101,38 +97,38 @@ class TopHeader extends StatelessWidget{
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Welcome', style: Theme.of(context).textTheme.bodyLarge),
-                SizedBox(
-                  height: 5,
-                ),
-                Text('Enjoy your favorite music',
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline6!
-                        .copyWith(fontWeight: FontWeight.bold)),
-                SizedBox(
-                  height: 20,
-                ),
-                TextFormField(
-                    decoration: InputDecoration(
-                        isDense: true,
-                        filled: true,
-                        fillColor: Colors.white,
-                        hintText: 'Search',
-                        hintStyle: Theme.of(context)
-                            .textTheme
-                            .bodyMedium!
-                            .copyWith(color: Colors.grey.shade400),
-                        prefixIcon:
-                            Icon(Icons.search, color: Colors.grey.shade400),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                            borderSide: BorderSide.none))),
-                            SizedBox(height: 10,),
+          SizedBox(
+            height: 5,
+          ),
+          Text('Enjoy your favorite music',
+              style: Theme.of(context)
+                  .textTheme
+                  .headline6!
+                  .copyWith(fontWeight: FontWeight.bold)),
+          SizedBox(
+            height: 20,
+          ),
+          TextFormField(
+              decoration: InputDecoration(
+                  isDense: true,
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintText: 'Search',
+                  hintStyle: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(color: Colors.grey.shade400),
+                  prefixIcon: Icon(Icons.search, color: Colors.grey.shade400),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                      borderSide: BorderSide.none))),
+          SizedBox(
+            height: 10,
+          ),
         ],
       ),
     );
   }
-  
 }
 
 class CustomBottomNavigationBar extends StatelessWidget {

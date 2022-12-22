@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/route_manager.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:musicapp1/dicontainer.dart';
+import 'package:musicapp1/models/playlist_model.dart';
+import 'package:musicapp1/models/song_model.dart';
 import 'package:musicapp1/screens/home_screen.dart';
 import 'package:musicapp1/screens/playlist_screen.dart';
 import 'package:musicapp1/screens/song_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await configureDependencies();
+  await Hive.initFlutter();
+
+  Hive.registerAdapter(SongAdapter());
+  Hive.registerAdapter(PlayListAdapter());
+  await Hive.openBox<Song>('songsdb');
+  await Hive.openBox<PlayList>('playlistdb');
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -26,7 +38,7 @@ class MyApp extends StatelessWidget {
         home: const HomeScreen(),
         getPages: [
           GetPage(name: "/", page: () => const HomeScreen()),
-          GetPage(name: "/song", page: () => const SongScreen()),
+          GetPage(name: "/song", page: () => SongScreen()),
           GetPage(name: "/playlist", page: () => const PlaylistScreen())
         ]);
   }

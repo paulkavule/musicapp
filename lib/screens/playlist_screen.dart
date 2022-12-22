@@ -63,18 +63,20 @@ class SongPlayListWidget extends ConsumerStatefulWidget {
 }
 
 class _SongPlayListWidgetState extends ConsumerState<SongPlayListWidget> {
-  // PlayingSong(index){
+  // int activeSong = 0;
+  // playingSong(index) {
   //   setState(() {
   //     activeSong = index;
   //   });
   // }
+
   @override
   Widget build(BuildContext context) {
     final int activeSong = ref.watch(playerProvider);
 
-    ref.listen<int>(playerProvider, (prev, next) {
-      print('playscreen => next index is   $next');
-    });
+    // ref.listen<int>(playerProvider, (prev, next) {
+    //   print('playscreen => next index is   $next');
+    // });
 
     return Column(
       children: [
@@ -83,10 +85,6 @@ class _SongPlayListWidgetState extends ConsumerState<SongPlayListWidget> {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: widget.playList.songs.length,
             itemBuilder: (context, index) {
-              var player = AudioPlayer().setAudioSource(
-                  AudioSource.uri(Uri.parse(widget.playList.songs[index].url)));
-
-              // AudioPlayer().setu(widget.playList.songs[index].url);
               return ListTile(
                 leading: Text(
                   '${index + 1}',
@@ -110,7 +108,8 @@ class _SongPlayListWidgetState extends ConsumerState<SongPlayListWidget> {
                 selectedColor: Colors.orange,
                 onTap: () {
                   ref.read(playerProvider.notifier).state = index;
-                  // PlayingSong(index);
+
+                  // playingSong(index);
                 },
               );
             }),
