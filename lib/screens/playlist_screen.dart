@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:musicapp1/dicontainer.dart';
 import 'package:musicapp1/models/playlist_model.dart';
 import 'package:musicapp1/providers/app_provider.dart';
+import 'package:musicapp1/services/song_svc.dart';
 import 'package:musicapp1/widgets/widgets.dart';
 
 class PlaylistScreen extends StatelessWidget {
@@ -51,11 +52,11 @@ class PlaylistScreen extends StatelessWidget {
 }
 
 class SongPlayListWidget extends ConsumerStatefulWidget {
-  const SongPlayListWidget({
+  SongPlayListWidget({
     Key? key,
     required this.playList,
   }) : super(key: key);
-
+  final songSv = getIT<ISongService>();
   final PlayList playList;
 
   @override
@@ -63,13 +64,6 @@ class SongPlayListWidget extends ConsumerStatefulWidget {
 }
 
 class _SongPlayListWidgetState extends ConsumerState<SongPlayListWidget> {
-  // int activeSong = 0;
-  // playingSong(index) {
-  //   setState(() {
-  //     activeSong = index;
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     final int activeSong = ref.watch(playerProvider);
@@ -85,6 +79,7 @@ class _SongPlayListWidgetState extends ConsumerState<SongPlayListWidget> {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: widget.playList.songs.length,
             itemBuilder: (context, index) {
+              var listSong = widget.playList.songs[index];
               return ListTile(
                 leading: Text(
                   '${index + 1}',
@@ -103,7 +98,74 @@ class _SongPlayListWidgetState extends ConsumerState<SongPlayListWidget> {
                 subtitle: Text(
                   '${widget.playList.songs[index].description} ø',
                 ),
-                trailing: const Icon(Icons.more_vert, color: Colors.white),
+                trailing: PopupMenuButton<int>(
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 1,
+                      child: Row(
+                        children: [
+                          Icon(Icons.favorite,
+                              color: listSong.isFavourite
+                                  ? Colors.amber.shade800
+                                  : Colors.deepPurple),
+                          const SizedBox(width: 10),
+                          Text(
+                            "Add to favourite",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(color: Colors.black),
+                          )
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 2,
+                      child: Row(
+                        children: [
+                          const Icon(Icons.playlist_remove,
+                              color: Colors.deepPurple),
+                          const SizedBox(width: 10),
+                          Text(
+                            "Remove from playlist",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(color: Colors.black),
+                          )
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 3,
+                      child: Row(
+                        children: [
+                          const Icon(Icons.delete_forever_rounded,
+                              color: Colors.deepPurple),
+                          const SizedBox(width: 10),
+                          Text(
+                            "Remove from disk",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(color: Colors.black),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                  icon: const Icon(Icons.more_vert),
+                  elevation: 2,
+                  onSelected: (value) {
+                    switch (value) {
+                      case 1:
+                        print('Uuid: ${listSong.titlte}, index: $index');
+                        // widget.songSv.markUnmarkAsFavourite(
+                        //     listSong.id, !listSong.isFavourite);
+                        break;
+                    }
+                  },
+                ), //const Icon(Icons.more_vert, color: Colors.white),
                 selected: index == activeSong,
                 selectedColor: Colors.orange,
                 onTap: () {

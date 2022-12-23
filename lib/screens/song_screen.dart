@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
@@ -70,7 +72,7 @@ class SongScreenState extends State<SongScreen> {
   }
 }
 
-class MusicPlayer extends StatelessWidget {
+class MusicPlayer extends StatefulWidget {
   const MusicPlayer(
       {Key? key,
       required this.song,
@@ -82,10 +84,18 @@ class MusicPlayer extends StatelessWidget {
   final Stream<SeekBarDto> seekBarStream;
   final AudioPlayer player;
   final ISongService svc;
+
+  @override
+  State<MusicPlayer> createState() => _MusicPlayerState();
+}
+
+class _MusicPlayerState extends State<MusicPlayer> {
   // final songSvc = getIT<ISongService>();
 
   @override
   Widget build(BuildContext context) {
+    bool favourite = widget.song.isFavourite;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 20),
       child: Column(
@@ -93,7 +103,7 @@ class MusicPlayer extends StatelessWidget {
         // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            song.titlte,
+            widget.song.titlte,
             style: Theme.of(context)
                 .textTheme
                 .headlineLarge!
@@ -103,7 +113,7 @@ class MusicPlayer extends StatelessWidget {
             height: 10,
           ),
           Text(
-            song.description,
+            widget.song.description,
             style: Theme.of(context)
                 .textTheme
                 .bodyLarge!
@@ -116,51 +126,56 @@ class MusicPlayer extends StatelessWidget {
               onPressed: () {
                 // context.widget.so
                 // context.widget.
-                // songSvc.markUnmarkAsFavourite(song.id, !song.isFavourite!);
+                print('Favourite: ${widget.song.isFavourite}');
+                setState(() {
+                  favourite = !favourite;
+                });
+                widget.svc.markUnmarkAsFavourite(
+                    widget.song.id, !widget.song.isFavourite);
               },
               icon: Icon(
                 Icons.favorite,
-                color: song.isFavourite! ? Colors.amber.shade700 : Colors.white,
+                color: favourite ? Colors.amber.shade700 : Colors.white,
               )),
           const SizedBox(
             height: 10,
           ),
           StreamBuilder(
-            stream: seekBarStream,
+            stream: widget.seekBarStream,
             builder: (context, snapshot) {
               final postionData = snapshot.data;
               // print('Duration: ${postionData?.duration} | position: ${postionData?.position}');
               return SeekBar(
                 position: postionData?.position ?? Duration.zero,
                 duration: postionData?.duration ?? Duration.zero,
-                onChangEnd: player.seek,
+                onChangEnd: widget.player.seek,
               );
             },
           ),
-          PlayButton(player: player),
+          PlayButton(player: widget.player),
           const SizedBox(
             height: 30,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.settings,
-                    color: Colors.white,
-                    size: 25,
-                  )),
-              IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.file_download,
-                    color: Colors.white,
-                    size: 25,
-                  ))
-            ],
-          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   crossAxisAlignment: CrossAxisAlignment.center,
+          //   children: [
+          //     IconButton(
+          //         onPressed: () {},
+          //         icon: const Icon(
+          //           Icons.settings,
+          //           color: Colors.white,
+          //           size: 25,
+          //         )),
+          //     IconButton(
+          //         onPressed: () {},
+          //         icon: const Icon(
+          //           Icons.file_download,
+          //           color: Colors.white,
+          //           size: 25,
+          //         ))
+          //   ],
+          // ),
         ],
       ),
     );

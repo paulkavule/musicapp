@@ -13,7 +13,8 @@ class Song {
   final String url;
   @HiveField(3)
   final String coverUrl;
-
+  @HiveField(8)
+  DateTime addDate = DateTime.now();
   @HiveField(4)
   bool isFavourite;
   @HiveField(5)
@@ -22,7 +23,6 @@ class Song {
   String genera;
   @HiveField(7)
   String id;
-
   Song(
       {required this.titlte,
       required this.description,

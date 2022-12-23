@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:musicapp1/dicontainer.dart';
 import 'package:musicapp1/models/playlist_model.dart';
+import 'package:musicapp1/services/song_svc.dart';
 
 import '../models/song_model.dart';
 import '../widgets/widgets.dart';
@@ -27,25 +29,19 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TopHeader(),
-                SectionHeader(title: 'Trending music'),
-                SizedBox(
-                  height: 20,
-                ),
+                const TopHeader(),
+                const SectionHeader(title: 'Recently added'),
+                const SizedBox(height: 20),
                 TrendingSection(),
-                SizedBox(
-                  height: 20,
-                ),
-                SectionHeader(title: 'Playlists'),
-                SizedBox(
-                  height: 20,
-                ),
-                PlayListSection()
+                const SizedBox(height: 20),
+                const SectionHeader(title: 'Playlists'),
+                const SizedBox(height: 20),
+                const PlayListSection()
               ],
             ),
           ),
         ),
-        bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: const CustomBottomNavigationBar(),
       ),
     );
   }
@@ -68,21 +64,44 @@ class PlayListSection extends StatelessWidget {
 }
 
 class TrendingSection extends StatelessWidget {
-  const TrendingSection({Key? key}) : super(key: key);
-
+  final songSvc = getIT<ISongService>();
+  TrendingSection({Key? key}) : super(key: key);
+//  List<Song> getList() async{
+//   var songList = await songSvc.getMostPlayedSongs();
+//   return songList;
+//  }
   @override
   Widget build(BuildContext context) {
-    List<Song> songs = Song.songs;
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.25,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: songs.length,
-        itemBuilder: (context, index) {
-          return SongCard(song: songs[index]);
-        },
-      ),
-    );
+    // List<Song> songs = Song.songs;
+    // var songList = List<Song>;
+
+    return FutureBuilder<List<Song>>(
+        future: songSvc.getMostRecentSongs(),
+        builder: (context, AsyncSnapshot<List<Song>> songs) {
+          var length = songs.data?.length ?? 100;
+          print('Data is gone:  $length ');
+
+          return SizedBox(
+            height: MediaQuery.of(context).size.height * 0.25,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: songs.data?.length,
+              itemBuilder: (context, index) {
+                return SongCard(song: songs.data![index]);
+              },
+            ),
+          );
+        });
+    // return SizedBox(
+    //   height: MediaQuery.of(context).size.height * 0.25,
+    //   child: ListView.builder(
+    //     scrollDirection: Axis.horizontal,
+    //     itemCount: songs.length,
+    //     itemBuilder: (context, index) {
+    //       return SongCard(song: songs[index]);
+    //     },
+    //   ),
+    // );
   }
 }
 
@@ -91,42 +110,35 @@ class TopHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Welcome', style: Theme.of(context).textTheme.bodyLarge),
-          SizedBox(
-            height: 5,
-          ),
-          Text('Enjoy your favorite music',
-              style: Theme.of(context)
-                  .textTheme
-                  .headline6!
-                  .copyWith(fontWeight: FontWeight.bold)),
-          SizedBox(
-            height: 20,
-          ),
-          TextFormField(
-              decoration: InputDecoration(
-                  isDense: true,
-                  filled: true,
-                  fillColor: Colors.white,
-                  hintText: 'Search',
-                  hintStyle: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(color: Colors.grey.shade400),
-                  prefixIcon: Icon(Icons.search, color: Colors.grey.shade400),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                      borderSide: BorderSide.none))),
-          SizedBox(
-            height: 10,
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Welcome', style: Theme.of(context).textTheme.bodyLarge),
+        const SizedBox(height: 5),
+        Text('Enjoy your favorite music',
+            style: Theme.of(context)
+                .textTheme
+                .headline6!
+                .copyWith(fontWeight: FontWeight.bold)),
+        const SizedBox(
+          height: 20,
+        ),
+        TextFormField(
+            decoration: InputDecoration(
+                isDense: true,
+                filled: true,
+                fillColor: Colors.white,
+                hintText: 'Search',
+                hintStyle: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(color: Colors.grey.shade400),
+                prefixIcon: Icon(Icons.search, color: Colors.grey.shade400),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: BorderSide.none))),
+        const SizedBox(height: 10),
+      ],
     );
   }
 }

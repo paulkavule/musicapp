@@ -8,6 +8,7 @@ abstract class ISongRepository {
   Future<void> deleteSong(String uuid);
   Future<void> updateSong(Song song);
   Future<void> markAsFavourite(String uuid, bool matched);
+  Future<List<Song>> getSongs();
 }
 
 @Injectable(as: ISongRepository)
@@ -16,7 +17,10 @@ class SongRepository implements ISongRepository {
   SongRepository();
 
   @override
-  Future<void> saveSong(Song song) async => await songTb.add(song);
+  Future<void> saveSong(Song song) async {
+    var rowid = await songTb.add(song);
+    print('Inserted ${song.id}  Date: ${song.addDate}: $rowid');
+  }
 
   @override
   Future<void> deleteSong(String uuid) async {
@@ -25,12 +29,16 @@ class SongRepository implements ISongRepository {
   }
 
   @override
+  Future<List<Song>> getSongs() async => songTb.values.toList();
+
+  @override
   Future<void> updateSong(Song song) async => songTb.put(song.id, song);
 
   @override
   Future<void> markAsFavourite(String uuid, bool matched) async {
     var song = songTb.values.firstWhere((sg) => sg.id == uuid);
     song.isFavourite = matched;
+    print('markAsFavourite:  $uuid');
     songTb.put(uuid, song);
   }
 }

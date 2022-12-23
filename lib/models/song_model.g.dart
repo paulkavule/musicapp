@@ -25,13 +25,13 @@ class SongAdapter extends TypeAdapter<Song> {
       playList: fields[5] as String,
       genera: fields[6] as String,
       id: fields[7] as String,
-    );
+    )..addDate = fields[8] as DateTime;
   }
 
   @override
   void write(BinaryWriter writer, Song obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.titlte)
       ..writeByte(1)
@@ -40,6 +40,8 @@ class SongAdapter extends TypeAdapter<Song> {
       ..write(obj.url)
       ..writeByte(3)
       ..write(obj.coverUrl)
+      ..writeByte(8)
+      ..write(obj.addDate)
       ..writeByte(4)
       ..write(obj.isFavourite)
       ..writeByte(5)

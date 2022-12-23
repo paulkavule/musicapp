@@ -10,6 +10,7 @@ import '../models/song_model.dart';
 abstract class ISongService {
   Future<void> saveSong(Song song);
   Future<void> markUnmarkAsFavourite(String uuid, bool matched);
+  Future<List<Song>> getMostRecentSongs();
 }
 
 @Injectable(as: ISongService)
@@ -28,12 +29,23 @@ class SongService implements ISongService {
   @override
   Future<void> saveSong(Song song) async {
     song.id = const Uuid().v4();
+    song.addDate = DateTime.now();
     await songRepo.saveSong(song);
   }
 
   @override
   Future<void> markUnmarkAsFavourite(String uuid, bool matched) =>
       songRepo.markAsFavourite(uuid, matched);
+
+  @override
+  Future<List<Song>> getMostRecentSongs() async {
+    var songs = await songRepo.getSongs();
+    songs.sort((s1, s2) => s1.addDate.compareTo(s2.addDate));
+    return songs;
+    // return songs.sort((sg1, sg2) => sg1.addDate > sg2.addDate )
+    //     //.where((song) => song.da > SystemConfigs.trendingPlayCount)
+    //     .toList();
+  }
 
   void loadInitialSongs() {
     var song1 = Song(
