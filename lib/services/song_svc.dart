@@ -28,7 +28,7 @@ class SongService implements ISongService {
 
   @override
   Future<void> saveSong(Song song) async {
-    song.id = const Uuid().v4();
+    song.uuid = const Uuid().v4();
     song.addDate = DateTime.now();
     await songRepo.saveSong(song);
   }

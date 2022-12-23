@@ -18,13 +18,14 @@ class SongRepository implements ISongRepository {
 
   @override
   Future<void> saveSong(Song song) async {
-    var rowid = await songTb.add(song);
-    print('Inserted ${song.id}  Date: ${song.addDate}: $rowid');
+    // var rowid = await songTb.add(song);
+    await songTb.put(song.uuid, song);
+    print('Inserted ${song.uuid}  Date: ${song.addDate}');
   }
 
   @override
   Future<void> deleteSong(String uuid) async {
-    var song = songTb.values.firstWhere((sg) => sg.id == uuid);
+    var song = songTb.values.firstWhere((sg) => sg.uuid == uuid);
     await songTb.delete(song);
   }
 
@@ -36,9 +37,10 @@ class SongRepository implements ISongRepository {
 
   @override
   Future<void> markAsFavourite(String uuid, bool matched) async {
-    var song = songTb.values.firstWhere((sg) => sg.id == uuid);
+    var song = songTb.values.firstWhere((sg) => sg.uuid == uuid);
     song.isFavourite = matched;
-    print('markAsFavourite:  $uuid');
+
+    print('markAsFavourite:  id: $uuid uuid: ${song.uuid} ');
     songTb.put(uuid, song);
   }
 }

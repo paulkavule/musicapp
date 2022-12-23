@@ -26,7 +26,7 @@ class SongScreenState extends State<SongScreen> {
   @override
   void initState() {
     super.initState();
-
+    print('Song id: ${song.id}');
     player.setAudioSource(ConcatenatingAudioSource(
         children: [AudioSource.uri(Uri.parse('asset:///${song.url}'))]));
   }
@@ -131,7 +131,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
                   favourite = !favourite;
                 });
                 widget.svc.markUnmarkAsFavourite(
-                    widget.song.id, !widget.song.isFavourite);
+                    widget.song.uuid, !widget.song.isFavourite);
               },
               icon: Icon(
                 Icons.favorite,

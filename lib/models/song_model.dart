@@ -22,7 +22,9 @@ class Song {
   @HiveField(6)
   String genera;
   @HiveField(7)
-  String id;
+  int id;
+  @HiveField(9)
+  String uuid;
   Song(
       {required this.titlte,
       required this.description,
@@ -31,7 +33,8 @@ class Song {
       this.isFavourite = false,
       this.playList = "",
       this.genera = "",
-      this.id = ""});
+      this.uuid = "",
+      this.id = 0});
 
   static List<Song> songs = [
     Song(
