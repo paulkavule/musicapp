@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:musicapp1/models/playlist_model.dart';
 import 'package:musicapp1/models/seekbar_model.dart';
 import 'package:musicapp1/providers/app_provider.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
 
+import '../models/song_model.dart';
+
 class MultiMusicPlayer extends ConsumerStatefulWidget {
   const MultiMusicPlayer({Key? key, required this.playList}) : super(key: key);
-  final PlayList playList;
+  final List<Song> playList;
   // final Function(int)? setActiveSong;
   // final int? activeSong;
   @override
@@ -22,9 +23,9 @@ class MultiMusicPlayerState extends ConsumerState<MultiMusicPlayer> {
   void initState() {
     super.initState();
     List<AudioSource>? audioSource = [];
-    widget.playList.songs.forEach((song) {
+    for (var song in widget.playList) {
       audioSource.add(AudioSource.uri(Uri.parse('asset:///${song.url}')));
-    });
+    }
     //print('restarted state');
     // print('sent index ${widget.activeSong}');
     // currentIndex = widget.activeSong ?? 0;
@@ -74,8 +75,7 @@ class MultiMusicPlayerState extends ConsumerState<MultiMusicPlayer> {
                 const SizedBox(
                   width: 10,
                 ),
-                Expanded(
-                    child: Text(widget.playList.songs[currentIndex].titlte)),
+                Expanded(child: Text(widget.playList[currentIndex].titlte)),
                 StreamBuilder<SequenceState?>(
                     stream: player.sequenceStateStream,
                     builder: (context, snapshot) {

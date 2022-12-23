@@ -22,11 +22,12 @@ class SongAdapter extends TypeAdapter<Song> {
       url: fields[2] as String,
       coverUrl: fields[3] as String,
       isFavourite: fields[4] as bool,
-      playList: fields[5] as String,
       genera: fields[6] as String,
       uuid: fields[9] as String,
       id: fields[7] as int,
-    )..addDate = fields[8] as DateTime;
+    )
+      ..addDate = fields[8] as DateTime
+      ..playList = (fields[5] as List).cast<String>();
   }
 
   @override

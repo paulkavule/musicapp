@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
+import 'package:musicapp1/models/playlist_model.dart';
 
 import '../models/song_model.dart';
 
@@ -39,8 +40,6 @@ class SongRepository implements ISongRepository {
   Future<void> markAsFavourite(String uuid, bool matched) async {
     var song = songTb.values.firstWhere((sg) => sg.uuid == uuid);
     song.isFavourite = matched;
-
-    print('markAsFavourite:  id: $uuid uuid: ${song.uuid} ');
     songTb.put(uuid, song);
   }
 }

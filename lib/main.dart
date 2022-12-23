@@ -5,7 +5,10 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:musicapp1/dicontainer.dart';
 import 'package:musicapp1/models/playlist_model.dart';
 import 'package:musicapp1/models/song_model.dart';
+import 'package:musicapp1/screens/favourite_screen.dart';
 import 'package:musicapp1/screens/home_screen.dart';
+import 'package:musicapp1/screens/play_list_manage.dart';
+import 'package:musicapp1/screens/playlist_dashboard.dart';
 import 'package:musicapp1/screens/playlist_screen.dart';
 import 'package:musicapp1/screens/song_screen.dart';
 
@@ -35,11 +38,15 @@ class MyApp extends StatelessWidget {
               .apply(bodyColor: Colors.white, displayColor: Colors.white),
           primarySwatch: Colors.blue,
         ),
-        home: const HomeScreen(),
+        home: PlaylistDashboard(),
         getPages: [
           GetPage(name: "/", page: () => const HomeScreen()),
           GetPage(name: "/song", page: () => SongScreen()),
-          GetPage(name: "/playlist", page: () => const PlaylistScreen())
+          GetPage(name: "/playlist", page: () => const PlaylistScreen()),
+          GetPage(name: "/favourite", page: () => FavouriteScreen()),
+          GetPage(
+              name: "/mngplaylist", page: () => const PlayListManageScreen()),
+          GetPage(name: "/dataplaylist", page: () => PlaylistDashboard())
         ]);
   }
 }

@@ -18,23 +18,20 @@ class PlayListAdapter extends TypeAdapter<PlayList> {
     };
     return PlayList(
       title: fields[0] as String,
-      imageUrl: fields[2] as String,
-      songs: (fields[1] as List).cast<Song>(),
-    )..Uuid = fields[3] as String?;
+      imageUrl: fields[1] as String,
+    )..uuid = fields[2] as String?;
   }
 
   @override
   void write(BinaryWriter writer, PlayList obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
-      ..write(obj.songs)
-      ..writeByte(2)
       ..write(obj.imageUrl)
-      ..writeByte(3)
-      ..write(obj.Uuid);
+      ..writeByte(2)
+      ..write(obj.uuid);
   }
 
   @override

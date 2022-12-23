@@ -11,6 +11,7 @@ abstract class ISongService {
   Future<void> saveSong(Song song);
   Future<void> markUnmarkAsFavourite(String uuid, bool matched);
   Future<List<Song>> getMostRecentSongs();
+  Future<List<Song>> getFavouriteSongs();
 }
 
 @Injectable(as: ISongService)
@@ -19,7 +20,6 @@ class SongService implements ISongService {
   final prefs = getIT<SharedPreferences>();
   SongService() {
     var loaded = prefs.getBool(LoadStatus.songsLoaded) ?? false;
-    print('Songs Loaded: $loaded');
     if (loaded == false) {
       loadInitialSongs();
       prefs.setBool(LoadStatus.songsLoaded, true);
@@ -68,5 +68,11 @@ class SongService implements ISongService {
     saveSong(song1);
     saveSong(song2);
     saveSong(song3);
+  }
+
+  @override
+  Future<List<Song>> getFavouriteSongs() async {
+    var list = await songRepo.getSongs();
+    return list.where((sg) => sg.isFavourite).toList();
   }
 }

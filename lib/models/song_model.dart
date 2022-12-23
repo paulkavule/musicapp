@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-import 'package:uuid/uuid.dart';
 
 part 'song_model.g.dart';
 
@@ -12,13 +11,13 @@ class Song {
   @HiveField(2)
   final String url;
   @HiveField(3)
-  final String coverUrl;
+  String coverUrl;
   @HiveField(8)
   DateTime addDate = DateTime.now();
   @HiveField(4)
   bool isFavourite;
   @HiveField(5)
-  String playList;
+  List<String> playList = [];
   @HiveField(6)
   String genera;
   @HiveField(7)
@@ -31,7 +30,6 @@ class Song {
       required this.url,
       required this.coverUrl,
       this.isFavourite = false,
-      this.playList = "",
       this.genera = "",
       this.uuid = "",
       this.id = 0});

@@ -8,13 +8,12 @@ class PlayList {
   @HiveField(0)
   final String title;
   @HiveField(1)
-  final List<Song> songs;
-  @HiveField(2)
   final String imageUrl;
-  @HiveField(3)
-  String? Uuid;
+  @HiveField(2)
+  String? uuid;
+  List<Song>? songs;
 
-  PlayList({required this.title, required this.imageUrl, required this.songs});
+  PlayList({required this.title, required this.imageUrl, this.songs});
 
   static List<PlayList> playList = [
     PlayList(

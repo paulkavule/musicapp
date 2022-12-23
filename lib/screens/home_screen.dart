@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:musicapp1/dicontainer.dart';
 import 'package:musicapp1/models/playlist_model.dart';
 import 'package:musicapp1/services/song_svc.dart';
@@ -164,6 +165,13 @@ class CustomBottomNavigationBar extends StatelessWidget {
         BottomNavigationBarItem(
             icon: Icon(Icons.people_outline), label: 'Profile')
       ],
+      onTap: (index) {
+        switch (index) {
+          case 1:
+            Get.toNamed("/favourite");
+            break;
+        }
+      },
     );
   }
 }
