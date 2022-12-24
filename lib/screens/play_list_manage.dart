@@ -213,7 +213,7 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
                   if (songList.isEmpty) {
                     return const Text('Please wait');
                   }
-                  var image = GetImage(songList[index].coverUrl);
+                  var image = getImage(songList[index].coverUrl);
 
                   return ListTile(
                     leading: ClipRRect(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:musicapp1/dicontainer.dart';
 import 'package:musicapp1/models/playlist_model.dart';
+import 'package:musicapp1/services/playlist_svc.dart';
 import 'package:musicapp1/services/song_svc.dart';
 
 import '../models/song_model.dart';
@@ -31,13 +32,19 @@ class HomeScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const TopHeader(),
-                const SectionHeader(title: 'Recently added'),
+                SectionHeader(
+                  title: 'Recently added',
+                  btnClicked: () {},
+                ),
                 const SizedBox(height: 20),
                 TrendingSection(),
                 const SizedBox(height: 20),
-                const SectionHeader(title: 'Playlists'),
+                SectionHeader(
+                  title: 'Playlists',
+                  btnClicked: () => {Get.toNamed("/dataplaylist")},
+                ),
                 const SizedBox(height: 20),
-                const PlayListSection()
+                PlayListSection()
               ],
             ),
           ),
@@ -49,18 +56,25 @@ class HomeScreen extends StatelessWidget {
 }
 
 class PlayListSection extends StatelessWidget {
-  const PlayListSection({Key? key}) : super(key: key);
-
+  PlayListSection({Key? key}) : super(key: key);
+  var plSvc = getIT<IPlaylistService>();
   @override
   Widget build(BuildContext context) {
-    List<PlayList> playLists = PlayList.playList;
-    return ListView.builder(
-        itemCount: playLists.length,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: ((context, index) {
-          return PlayListCard(playList: playLists[index]);
-        }));
+    return FutureBuilder<List<PlayList>>(
+        future: plSvc.getPlayList(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData == false) {
+            return const Text('Please wait');
+          }
+          var playLists = snapshot.data!.take(4).toList();
+          return ListView.builder(
+              itemCount: playLists.length,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: ((context, index) {
+                return PlayListCard(playList: playLists[index]);
+              }));
+        });
   }
 }
 
@@ -161,7 +175,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
         BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favorites'),
-        BottomNavigationBarItem(icon: Icon(Icons.play_circle), label: 'Play'),
+        // BottomNavigationBarItem(icon: Icon(Icons.play_circle), label: 'Play'),
         BottomNavigationBarItem(
             icon: Icon(Icons.people_outline), label: 'Profile')
       ],
@@ -169,6 +183,9 @@ class CustomBottomNavigationBar extends StatelessWidget {
         switch (index) {
           case 1:
             Get.toNamed("/favourite");
+            break;
+          case 2:
+            Get.toNamed("/profile");
             break;
         }
       },

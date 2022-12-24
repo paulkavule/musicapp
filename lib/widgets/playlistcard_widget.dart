@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../models/playlist_model.dart';
+import '../utilities/helpers.dart';
 
 class PlayListCard extends StatelessWidget {
-  const PlayListCard({
-    Key? key,
-    required this.playList,
-  }) : super(key: key);
-
+  const PlayListCard({Key? key, required this.playList, this.homeScreen = true})
+      : super(key: key);
+  final bool homeScreen;
   final PlayList playList;
 
   @override
   Widget build(BuildContext context) {
+    var image = getImage(playList.imageUrl);
+
     return InkWell(
       onTap: () {
         Get.toNamed("/playlist", arguments: playList);
@@ -28,14 +29,8 @@ class PlayListCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              child: Image.network(
-                playList.imageUrl,
-                width: 50,
-                height: 50,
-                fit: BoxFit.cover,
-              ),
-            ),
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                child: image),
             const SizedBox(
               width: 10,
             ),
@@ -61,12 +56,19 @@ class PlayListCard extends StatelessWidget {
                 ],
               ),
             ),
-            IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.play_circle,
-                  color: Colors.white,
-                ))
+            homeScreen
+                ? IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.play_circle,
+                      color: Colors.white,
+                    ))
+                : IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ))
           ],
         ),
       ),

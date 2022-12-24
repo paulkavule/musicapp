@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
               .apply(bodyColor: Colors.white, displayColor: Colors.white),
           primarySwatch: Colors.blue,
         ),
-        home: PlaylistDashboard(),
+        home: const HomeScreen(),
         getPages: [
           GetPage(name: "/", page: () => const HomeScreen()),
           GetPage(name: "/song", page: () => SongScreen()),

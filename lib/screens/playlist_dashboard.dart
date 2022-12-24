@@ -1,14 +1,12 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:musicapp1/dicontainer.dart';
 import 'package:musicapp1/services/playlist_svc.dart';
-import 'package:musicapp1/utilities/helpers.dart';
 
 import '../models/playlist_model.dart';
+import '../widgets/playlistcard_widget.dart';
 
 class PlaylistDashboard extends StatefulWidget {
-  PlaylistDashboard({Key? key}) : super(key: key);
+  const PlaylistDashboard({Key? key}) : super(key: key);
 
   @override
   State<PlaylistDashboard> createState() => _PlaylistDashboardState();
@@ -16,7 +14,7 @@ class PlaylistDashboard extends StatefulWidget {
 
 class _PlaylistDashboardState extends State<PlaylistDashboard> {
   var playlistSvc = getIT<IPlaylistService>();
-  List<PlayList> playList = [];
+  List<PlayList> playLists = [];
 
   @override
   Widget build(BuildContext context) {
@@ -49,54 +47,17 @@ class _PlaylistDashboardState extends State<PlaylistDashboard> {
                   if (snapshot.hasData == false) {
                     return const Text('Please wait');
                   }
-                  playList = snapshot.data!;
-                  return ListView.separated(
-                    shrinkWrap: true,
-                    itemCount: playList.length,
-                    separatorBuilder: (context, index) => Divider(
-                      color: Colors.grey.shade600,
-                    ),
-                    itemBuilder: (context, index) {
-                      print(
-                          '\n\nListSize: ${playList.length} path: ${playList[index]}');
-                      if (playList.isEmpty) {
-                        return const Text('Please wait');
-                      }
-
-                      var image = GetImage(playList[index].imageUrl);
-
-                      return ListTile(
-                        onTap: () {},
-                        leading: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: image),
-                        title: Text(playList[index].title),
-
-                        // tileColor: Colors.deepPurple.shade700,
-                        horizontalTitleGap: 2.3,
-                        // shape: ShapeBorder(widget: SizedBox(height: 100,)),
-                        // subtitle: const Text('Hellos'),
-                        trailing: IconButton(
-                          onPressed: () {
-                            print(
-                                'Deleting ${playList[index].uuid} -- ${playList[index].title} -- $index');
-
-                            playlistSvc.deleteItem(playList[index].uuid!);
-                            setState(() {
-                              playList = playList
-                                  .where(
-                                      (itm) => itm.uuid != playList[index].uuid)
-                                  .toList();
-                            });
-                          },
-                          icon: const Icon(
-                            Icons.delete,
-                            color: Colors.white,
-                          ),
-                        ),
-                      );
-                    },
-                  );
+                  playLists = snapshot.data!;
+                  return ListView.builder(
+                      itemCount: playLists.length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: ((context, index) {
+                        return PlayListCard(
+                          playList: playLists[index],
+                          homeScreen: false,
+                        );
+                      }));
                 },
               )
               // ListView.builder(
@@ -112,3 +73,53 @@ class _PlaylistDashboardState extends State<PlaylistDashboard> {
     );
   }
 }
+
+
+//  return ListView.separated(
+//                     shrinkWrap: true,
+//                     itemCount: playList.length,
+//                     separatorBuilder: (context, index) => Divider(
+//                       color: Colors.grey.shade600,
+//                     ),
+//                     itemBuilder: (context, index) {
+//                       print(
+//                           '\n\nListSize: ${playList.length} path: ${playList[index]}');
+//                       if (playList.isEmpty) {
+//                         return const Text('Please wait');
+//                       }
+
+//                       var image = GetImage(playList[index].imageUrl);
+
+//                       return ListTile(
+//                         onTap: () {},
+//                         leading: ClipRRect(
+//                             borderRadius: BorderRadius.circular(10),
+//                             child: image),
+//                         title: Text(playList[index].title),
+
+//                         // tileColor: Colors.deepPurple.shade700,
+//                         horizontalTitleGap: 2.3,
+//                         // shape: ShapeBorder(widget: SizedBox(height: 100,)),
+//                         // subtitle: const Text('Hellos'),
+//                         trailing: IconButton(
+//                           onPressed: () {
+//                             print(
+//                                 'Deleting ${playList[index].uuid} -- ${playList[index].title} -- $index');
+
+//                             playlistSvc.deleteItem(playList[index].uuid!);
+//                             setState(() {
+//                               playList = playList
+//                                   .where(
+//                                       (itm) => itm.uuid != playList[index].uuid)
+//                                   .toList();
+//                             });
+//                           },
+//                           icon: const Icon(
+//                             Icons.delete,
+//                             color: Colors.white,
+//                           ),
+//                         ),
+//                       );
+//                     },
+//                   );
+                

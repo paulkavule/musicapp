@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:musicapp1/models/playlist_model.dart';
+import 'package:musicapp1/utilities/helpers.dart';
 import 'package:musicapp1/widgets/widgets.dart';
 
 class PlaylistScreen extends StatelessWidget {
@@ -36,7 +37,7 @@ class PlaylistScreen extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                const PlayOrShuffleSwitch(),
+                // const PlayOrShuffleSwitch(),
                 SongPlayListWidget(songsList: playList.songs!),
               ],
             ),
@@ -139,16 +140,12 @@ class PlaylistWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var image = getImage(playList.imageUrl);
     return Column(
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(15.0),
-          child: Image.network(
-            playList.imageUrl,
-            height: MediaQuery.of(context).size.height * 0.3,
-            width: MediaQuery.of(context).size.height * 0.3,
-            fit: BoxFit.cover,
-          ),
+          child: image,
         ),
         const SizedBox(
           height: 30,

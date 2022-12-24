@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:musicapp1/models/seekbar_model.dart';
 import 'package:musicapp1/providers/app_provider.dart';
+import 'package:musicapp1/utilities/helpers.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
 
 import '../models/song_model.dart';
@@ -24,11 +25,12 @@ class MultiMusicPlayerState extends ConsumerState<MultiMusicPlayer> {
     super.initState();
     List<AudioSource>? audioSource = [];
     for (var song in widget.playList) {
-      audioSource.add(AudioSource.uri(Uri.parse('asset:///${song.url}')));
+      var songUri = getUriResource(song.url);
+      if (songUri != null) {
+        audioSource.add(AudioSource.uri(songUri));
+      }
     }
-    //print('restarted state');
-    // print('sent index ${widget.activeSong}');
-    // currentIndex = widget.activeSong ?? 0;
+
     player.setAudioSource(ConcatenatingAudioSource(children: audioSource),
         initialIndex: currentIndex);
   }
@@ -57,16 +59,16 @@ class MultiMusicPlayerState extends ConsumerState<MultiMusicPlayer> {
       }
       // print('player => next index is   $next');
     });
-
+    if (widget.playList.isEmpty) {
+      return const SizedBox(
+        height: 10,
+      );
+    }
     return Row(
       children: [
         ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
-              'assets/images/pray.png',
-              height: 35,
-              width: 35,
-            )),
+            child: getImage(widget.playList[currentIndex].coverUrl)),
         Expanded(
             child: Column(
           children: [

@@ -6,6 +6,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:musicapp1/dicontainer.dart';
 import 'package:musicapp1/models/song_model.dart';
 import 'package:musicapp1/services/song_svc.dart';
+import 'package:musicapp1/utilities/helpers.dart';
 import 'package:musicapp1/widgets/playbutton_widget.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
 
@@ -26,9 +27,11 @@ class SongScreenState extends State<SongScreen> {
   @override
   void initState() {
     super.initState();
-    print('Song id: ${song.id}');
-    player.setAudioSource(ConcatenatingAudioSource(
-        children: [AudioSource.uri(Uri.parse('asset:///${song.url}'))]));
+    // print('Song id: ${song.id}');
+    var uri = getUriResource(song.url);
+
+    player.setAudioSource(
+        ConcatenatingAudioSource(children: [AudioSource.uri(uri!)]));
   }
 
   @override
@@ -56,10 +59,7 @@ class SongScreenState extends State<SongScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(
-            song.coverUrl,
-            fit: BoxFit.cover,
-          ),
+          getImage(song.coverUrl),
           const BackgroundFilter(),
           MusicPlayer(
               song: song,
@@ -103,7 +103,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
         // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            widget.song.titlte,
+            widget.song.titlte.truncate(10, placeholder: '..'),
             style: Theme.of(context)
                 .textTheme
                 .headlineLarge!
@@ -113,11 +113,13 @@ class _MusicPlayerState extends State<MusicPlayer> {
             height: 10,
           ),
           Text(
-            widget.song.description,
-            style: Theme.of(context)
-                .textTheme
-                .bodyLarge!
-                .copyWith(color: Colors.white),
+            widget.song.titlte.length > 10
+                ? widget.song
+                    .titlte //'${widget.song.titlte}\n${widget.song.description.truncate(30, placeholder: '...')}'
+                : widget.song.description.truncate(30, placeholder: '...'),
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  color: Colors.white,
+                ),
           ),
           const SizedBox(
             height: 5,
