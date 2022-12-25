@@ -122,14 +122,66 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
           ])),
       child: Scaffold(
         backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: const Text('Create Playlist'),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  print('name ${unameField.text}');
+                  if (unameField.text.isEmpty) {
+                    showCupertinoDialog(
+                        context: context,
+                        builder: (BuildContext ctx) {
+                          return CupertinoAlertDialog(
+                            title: const Text(
+                                'Please Confirm, playlist name not specified'),
+                            content: const Text(
+                                'Are you sure you want to add songs but not to a specific playlist'),
+                            actions: [
+                              // The "Yes" button
+                              CupertinoDialogAction(
+                                onPressed: () {
+                                  _savePlayList();
+                                  setState(() {
+                                    Navigator.of(context).pop();
+                                  });
+                                },
+                                child: const Text('Yes'),
+                                isDefaultAction: true,
+                                isDestructiveAction: true,
+                              ),
+                              // The "No" button
+                              CupertinoDialogAction(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('No'),
+                                isDefaultAction: false,
+                                isDestructiveAction: false,
+                              )
+                            ],
+                          );
+                        });
+                  } else {
+                    _savePlayList();
+                  }
+                },
+                icon: const Icon(
+                  Icons.save,
+                  color: Colors.white,
+                ))
+          ],
+        ),
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(children: [
-              Text(
-                'Create PlayList',
-                style: Theme.of(context).textTheme.headline6,
-              ),
+              // Text(
+              //   'Create PlayList',
+              //   style: Theme.of(context).textTheme.headline6,
+              // ),
               const SizedBox(
                 height: 20,
               ),
@@ -155,51 +207,6 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
                                 borderRadius: BorderRadius.circular(8.0),
                                 borderSide: BorderSide.none))),
                   ),
-                  IconButton(
-                      onPressed: () {
-                        print('name ${unameField.text}');
-                        if (unameField.text.isEmpty) {
-                          showCupertinoDialog(
-                              context: context,
-                              builder: (BuildContext ctx) {
-                                return CupertinoAlertDialog(
-                                  title: const Text(
-                                      'Please Confirm, playlist name not specified'),
-                                  content: const Text(
-                                      'Are you sure you want to add songs but not to a specific playlist'),
-                                  actions: [
-                                    // The "Yes" button
-                                    CupertinoDialogAction(
-                                      onPressed: () {
-                                        _savePlayList();
-                                        setState(() {
-                                          Navigator.of(context).pop();
-                                        });
-                                      },
-                                      child: const Text('Yes'),
-                                      isDefaultAction: true,
-                                      isDestructiveAction: true,
-                                    ),
-                                    // The "No" button
-                                    CupertinoDialogAction(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text('No'),
-                                      isDefaultAction: false,
-                                      isDestructiveAction: false,
-                                    )
-                                  ],
-                                );
-                              });
-                        } else {
-                          _savePlayList();
-                        }
-                      },
-                      icon: const Icon(
-                        Icons.save,
-                        color: Colors.white,
-                      ))
                 ],
               ),
 

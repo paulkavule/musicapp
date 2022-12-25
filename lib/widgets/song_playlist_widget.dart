@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:musicapp1/utilities/helpers.dart';
 
-import '../dicontainer.dart';
 import '../models/song_model.dart';
 import '../providers/app_provider.dart';
-import '../services/song_svc.dart';
 import 'multimusic_player_widget.dart';
 
 class SongPlayListWidget extends ConsumerStatefulWidget {
-  SongPlayListWidget({
+  const SongPlayListWidget({
     Key? key,
     required this.songsList,
   }) : super(key: key);
-  final songSv = getIT<ISongService>();
+  // final songSv = getIT<ISongService>();
   final List<Song> songsList;
 
   @override
@@ -28,10 +27,10 @@ class _SongPlayListWidgetState extends ConsumerState<SongPlayListWidget> {
     //   print('playscreen => next index is   $next');
     // });
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        ListView.builder(
+    return Stack(children: <Widget>[
+      Container(
+        constraints: const BoxConstraints.expand(),
+        child: ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: widget.songsList.length,
@@ -55,7 +54,7 @@ class _SongPlayListWidgetState extends ConsumerState<SongPlayListWidget> {
                       .copyWith(fontWeight: FontWeight.bold),
                 ),
                 subtitle: Text(
-                  '${widget.songsList[index].description} ø',
+                  '${widget.songsList[index].description.truncate(20, placeholder: '...')} ø',
                 ),
                 trailing: PopupMenuButton<int>(
                   itemBuilder: (context) => [
@@ -134,8 +133,13 @@ class _SongPlayListWidgetState extends ConsumerState<SongPlayListWidget> {
                 },
               );
             }),
-        MultiMusicPlayer(playList: widget.songsList)
-      ],
-    );
+      ),
+      Positioned(
+        bottom: 0,
+        right: 0,
+        left: 0,
+        child: MultiMusicPlayer(playList: widget.songsList),
+      ),
+    ]);
   }
 }

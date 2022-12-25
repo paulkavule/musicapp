@@ -19,8 +19,8 @@ class HomeScreen extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-            Colors.deepPurple.shade800.withOpacity(0.8),
-            Colors.deepPurple.shade200.withOpacity(0.8)
+            Colors.brown.shade800.withOpacity(0.8),
+            Colors.brown.shade200.withOpacity(0.8)
           ])),
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -34,7 +34,7 @@ class HomeScreen extends StatelessWidget {
                 const TopHeader(),
                 SectionHeader(
                   title: 'Recently added',
-                  btnClicked: () {},
+                  btnClicked: () => {Get.toNamed('/recentlyadded')},
                 ),
                 const SizedBox(height: 20),
                 TrendingSection(),
@@ -91,7 +91,7 @@ class TrendingSection extends StatelessWidget {
     // var songList = List<Song>;
 
     return FutureBuilder<List<Song>>(
-        future: songSvc.getMostRecentSongs(),
+        future: songSvc.getMostRecentSongs(count: 4),
         builder: (context, AsyncSnapshot<List<Song>> songs) {
           var length = songs.data?.length ?? 100;
           print('Data is gone:  $length ');
@@ -167,7 +167,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
-      backgroundColor: Colors.deepPurple.shade800,
+      backgroundColor: Colors.brown.shade800,
       unselectedItemColor: Colors.grey.shade400,
       selectedItemColor: Colors.white,
       showUnselectedLabels: false,

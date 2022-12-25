@@ -10,6 +10,7 @@ import 'package:musicapp1/screens/home_screen.dart';
 import 'package:musicapp1/screens/play_list_manage.dart';
 import 'package:musicapp1/screens/playlist_dashboard.dart';
 import 'package:musicapp1/screens/playlist_screen.dart';
+import 'package:musicapp1/screens/recently_screen.dart';
 import 'package:musicapp1/screens/song_screen.dart';
 
 void main() async {
@@ -46,7 +47,8 @@ class MyApp extends StatelessWidget {
           GetPage(name: "/favourite", page: () => FavouriteScreen()),
           GetPage(
               name: "/mngplaylist", page: () => const PlayListManageScreen()),
-          GetPage(name: "/dataplaylist", page: () => PlaylistDashboard())
+          GetPage(name: "/dataplaylist", page: () => const PlaylistDashboard()),
+          GetPage(name: '/recentlyadded', page: () => const RecentlyAddScreen())
         ]);
   }
 }

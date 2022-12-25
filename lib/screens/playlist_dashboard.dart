@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:musicapp1/dicontainer.dart';
 import 'package:musicapp1/services/playlist_svc.dart';
 
@@ -33,6 +34,16 @@ class _PlaylistDashboardState extends State<PlaylistDashboard> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           title: const Text('Playlist'),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Get.toNamed('/mngplaylist');
+                },
+                icon: const Icon(
+                  Icons.add_circle_rounded,
+                  size: 30,
+                ))
+          ],
         ),
         body: SingleChildScrollView(
           child: Column(
