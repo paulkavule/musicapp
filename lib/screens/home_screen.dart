@@ -44,7 +44,7 @@ class HomeScreen extends StatelessWidget {
                   btnClicked: () => {Get.toNamed("/dataplaylist")},
                 ),
                 const SizedBox(height: 20),
-                PlayListSection()
+                const PlayListSection()
               ],
             ),
           ),
@@ -56,8 +56,8 @@ class HomeScreen extends StatelessWidget {
 }
 
 class PlayListSection extends StatelessWidget {
-  PlayListSection({Key? key}) : super(key: key);
-  var plSvc = getIT<IPlaylistService>();
+  const PlayListSection({Key? key}) : super(key: key);
+  get plSvc => getIT<IPlaylistService>();
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<PlayList>>(

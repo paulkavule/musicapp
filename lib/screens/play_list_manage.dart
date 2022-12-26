@@ -10,6 +10,15 @@ import '../models/song_model.dart';
 import '../services/playlist_svc.dart';
 import '../utilities/helpers.dart';
 
+class PlayListManage extends StatelessWidget {
+  const PlayListManage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
 class PlayListManageScreen extends StatefulWidget {
   const PlayListManageScreen({Key? key}) : super(key: key);
 
@@ -19,6 +28,7 @@ class PlayListManageScreen extends StatefulWidget {
 
 class _PlayListManageStateScreen extends State<PlayListManageScreen> {
   List<Song> songList = [];
+  bool enableCtrls = false;
   String coverUrl = "";
   var songSvc = getIT<ISongService>();
   var playListSvc = getIT<IPlaylistService>();
@@ -111,6 +121,7 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    enableCtrls = songList.isNotEmpty;
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -128,50 +139,53 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
           elevation: 0,
           actions: [
             IconButton(
-                onPressed: () {
-                  print('name ${unameField.text}');
-                  if (unameField.text.isEmpty) {
-                    showCupertinoDialog(
-                        context: context,
-                        builder: (BuildContext ctx) {
-                          return CupertinoAlertDialog(
-                            title: const Text(
-                                'Please Confirm, playlist name not specified'),
-                            content: const Text(
-                                'Are you sure you want to add songs but not to a specific playlist'),
-                            actions: [
-                              // The "Yes" button
-                              CupertinoDialogAction(
-                                onPressed: () {
-                                  _savePlayList();
-                                  setState(() {
-                                    Navigator.of(context).pop();
-                                  });
-                                },
-                                child: const Text('Yes'),
-                                isDefaultAction: true,
-                                isDestructiveAction: true,
-                              ),
-                              // The "No" button
-                              CupertinoDialogAction(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('No'),
-                                isDefaultAction: false,
-                                isDestructiveAction: false,
-                              )
-                            ],
-                          );
-                        });
-                  } else {
-                    _savePlayList();
-                  }
-                },
-                icon: const Icon(
-                  Icons.save,
-                  color: Colors.white,
-                ))
+              onPressed: enableCtrls == false
+                  ? null
+                  : () {
+                      if (unameField.text.isEmpty) {
+                        showCupertinoDialog(
+                            context: context,
+                            builder: (BuildContext ctx) {
+                              return CupertinoAlertDialog(
+                                title: const Text(
+                                    'Please Confirm, playlist name not specified'),
+                                content: const Text(
+                                    'Are you sure you want to add songs but not to a specific playlist'),
+                                actions: [
+                                  // The "Yes" button
+                                  CupertinoDialogAction(
+                                    onPressed: () {
+                                      _savePlayList();
+                                      setState(() {
+                                        Navigator.of(context).pop();
+                                      });
+                                    },
+                                    isDefaultAction: true,
+                                    isDestructiveAction: true,
+                                    child: const Text('Yes'),
+                                  ),
+                                  // The "No" button
+                                  CupertinoDialogAction(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    isDefaultAction: false,
+                                    isDestructiveAction: false,
+                                    child: const Text('No'),
+                                  )
+                                ],
+                              );
+                            });
+                      } else {
+                        _savePlayList();
+                      }
+                    },
+              icon: Icon(
+                Icons.save,
+                color: enableCtrls ? Colors.white : Colors.grey.shade400,
+              ),
+              disabledColor: Colors.deepPurple.shade400,
+            )
           ],
         ),
         body: SafeArea(
@@ -185,38 +199,34 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
               const SizedBox(
                 height: 20,
               ),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: TextFormField(
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge!
-                            .copyWith(color: Colors.black),
-                        controller: unameField,
-                        decoration: InputDecoration(
-                            isDense: true,
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'Playlist name',
-                            hintStyle: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(color: Colors.grey.shade400),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                borderSide: BorderSide.none))),
-                  ),
-                ],
+              TextFormField(
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge!
+                      .copyWith(color: Colors.black),
+                  controller: unameField,
+                  enabled: enableCtrls,
+                  decoration: InputDecoration(
+                      isDense: true,
+                      filled: true,
+                      fillColor:
+                          enableCtrls ? Colors.white : Colors.grey.shade300,
+                      hintText: 'Playlist name',
+                      hintStyle: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(color: Colors.grey.shade400),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          borderSide: BorderSide.none))),
+              const SizedBox(
+                height: 30,
               ),
 
-              //         Expanded(
               ListView.builder(
                 shrinkWrap: true,
                 itemCount: songList.length,
                 itemBuilder: (context, index) {
-                  print(
-                      '\n\nListSize: ${songList.length} path: ${songList[index]}');
                   if (songList.isEmpty) {
                     return const Text('Please wait');
                   }
@@ -228,7 +238,12 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
                     title: Text(songList[index].titlte),
                     // subtitle: const Text('Hellos'),
                     trailing: IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          songList.removeWhere(
+                              (song) => song.uuid == songList[index].uuid);
+                        });
+                      },
                       icon: const Icon(
                         Icons.delete,
                         color: Colors.white,
@@ -245,6 +260,7 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               FloatingActionButton(
+                heroTag: 'btn1',
                 onPressed: () {
                   _pickFile();
                 },
@@ -255,6 +271,7 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
                 width: 10,
               ),
               FloatingActionButton(
+                heroTag: 'btn2',
                 onPressed: () {
                   _pickDirectory();
                 },

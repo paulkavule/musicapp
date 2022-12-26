@@ -4,7 +4,6 @@ import 'package:musicapp1/widgets/widgets.dart';
 
 import '../models/song_model.dart';
 import '../services/song_svc.dart';
-import '../widgets/song_widget.dart';
 
 class RecentlyAddScreen extends StatefulWidget {
   const RecentlyAddScreen({Key? key}) : super(key: key);

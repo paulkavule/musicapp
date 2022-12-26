@@ -1,24 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:musicapp1/models/playlist_model.dart';
 import 'package:musicapp1/utilities/helpers.dart';
 import 'package:musicapp1/widgets/widgets.dart';
 
-class PlaylistScreen extends StatelessWidget {
+import '../widgets/custome_list_tile.dart';
+
+class PlaylistScreen extends ConsumerStatefulWidget {
   const PlaylistScreen({Key? key}) : super(key: key);
 
   @override
+  ConsumerState<PlaylistScreen> createState() => _PlaylistScreenState();
+}
+
+class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
+  @override
   Widget build(BuildContext context) {
     PlayList playList = Get.arguments ?? PlayList.playList[0];
+    // if (playList.songs == null || playList.songs!.isEmpty) {
+    //   // return const NoData(
+    //   //     title: 'Ops', message: 'Playlist does not contain any songs');
 
+    // }
+    print('Playlist facts ${playList.songs!.length}');
+    var songs = playList.songs!;
     return Container(
+      constraints: const BoxConstraints.expand(),
       decoration: BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-            Colors.deepPurple.shade800.withOpacity(0.8),
-            Colors.deepPurple.shade200.withOpacity(0.8)
+            Colors.brown.shade800.withOpacity(0.8),
+            Colors.brown.shade200.withOpacity(0.8)
           ])),
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -27,22 +42,49 @@ class PlaylistScreen extends StatelessWidget {
           elevation: 0,
           title: const Text('Playlist'),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                PlaylistWidget(playList: playList),
-                const SizedBox(
-                  height: 20,
-                ),
-                // const PlayOrShuffleSwitch(),
-                SongPlayListWidget(songsList: playList.songs!),
-              ],
-            ),
+        // bottomNavigationBar: MultiMusicPlayer(
+        //   playList: songs,
+        // ),
+        body: SafeArea(
+            child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.7 + 20,
+                  child: CustomScrollView(
+                    slivers: <Widget>[
+                      SliverList(
+                          delegate: SliverChildListDelegate(<Widget>[
+                        PlaylistWidget(playList: playList),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        ListView.builder(
+                            shrinkWrap: true,
+                            // padding: EdgeInsets.all(5),
+                            // scrollDirection: Axis.vertical,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: songs.length,
+                            itemBuilder: (context, index) {
+                              var listSong = songs[index];
+
+                              return CustomListTile(
+                                  index: index,
+                                  listSong: listSong,
+                                  activeSong: 0,
+                                  onTaped: () {});
+                            }),
+                      ]))
+                    ],
+                  )),
+              const Spacer(),
+              MultiMusicPlayer(playList: songs)
+              // ElevatedButton(onPressed: () {}, child: const Text('Hens'))
+            ],
           ),
-        ),
+        )),
       ),
     );
   }
@@ -140,7 +182,11 @@ class PlaylistWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var image = getImage(playList.imageUrl);
+    var image = getImage(
+      playList.imageUrl,
+      width: MediaQuery.of(context).size.height * 0.3,
+      height: MediaQuery.of(context).size.height * 0.3,
+    );
     return Column(
       children: [
         ClipRRect(
