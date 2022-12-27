@@ -5,6 +5,7 @@ import 'package:musicapp1/models/playlist_model.dart';
 import 'package:musicapp1/utilities/helpers.dart';
 import 'package:musicapp1/widgets/widgets.dart';
 
+import '../providers/app_provider.dart';
 import '../widgets/custome_list_tile.dart';
 
 class PlaylistScreen extends ConsumerStatefulWidget {
@@ -17,6 +18,8 @@ class PlaylistScreen extends ConsumerStatefulWidget {
 class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
   @override
   Widget build(BuildContext context) {
+    final int activeSong = ref.watch(playerProvider);
+
     PlayList playList = Get.arguments ?? PlayList.playList[0];
     // if (playList.songs == null || playList.songs!.isEmpty) {
     //   // return const NoData(
@@ -52,7 +55,7 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.7 + 20,
+                  height: MediaQuery.of(context).size.height * 0.7,
                   child: CustomScrollView(
                     slivers: <Widget>[
                       SliverList(
@@ -73,8 +76,11 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
                               return CustomListTile(
                                   index: index,
                                   listSong: listSong,
-                                  activeSong: 0,
-                                  onTaped: () {});
+                                  activeSong: activeSong,
+                                  onTaped: () {
+                                    ref.read(playerProvider.notifier).state =
+                                        index;
+                                  });
                             }),
                       ]))
                     ],

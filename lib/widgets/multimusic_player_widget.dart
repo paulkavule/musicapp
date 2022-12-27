@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:musicapp1/models/seekbar_model.dart';
 import 'package:musicapp1/providers/app_provider.dart';
 import 'package:musicapp1/utilities/helpers.dart';
@@ -18,21 +19,23 @@ class MultiMusicPlayer extends ConsumerStatefulWidget {
 }
 
 class MultiMusicPlayerState extends ConsumerState<MultiMusicPlayer> {
-  AudioPlayer player = AudioPlayer();
+  final player = AudioPlayer();
   int currentIndex = 0;
   @override
   void initState() {
     super.initState();
     List<AudioSource>? audioSource = [];
+    int count = 1;
     for (var song in widget.playList) {
       var songUri = getUriResource(song.url);
-      if (songUri != null) {
-        audioSource.add(AudioSource.uri(songUri));
-      }
+      audioSource.add(AudioSource.uri(songUri,
+          tag: MediaItem(id: '$count', title: song.titlte)));
+      count++;
     }
 
     player.setAudioSource(ConcatenatingAudioSource(children: audioSource),
         initialIndex: currentIndex);
+    print('Songs loaded');
   }
 
   @override
@@ -53,7 +56,7 @@ class MultiMusicPlayerState extends ConsumerState<MultiMusicPlayer> {
   @override
   Widget build(BuildContext context) {
     ref.listen<int>(playerProvider, (prev, next) async {
-      await player.seek(const Duration(seconds: 10), index: next);
+      await player.seek(const Duration(seconds: 0), index: next);
       if (player.playing == false) {
         player.play();
       }
@@ -147,10 +150,14 @@ class MultiMusicPlayerState extends ConsumerState<MultiMusicPlayer> {
                     stream: player.sequenceStateStream,
                     builder: (context, snapshot) {
                       return IconButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            print('Next button clicked');
                             if (player.hasNext) {
+                              // await player.seek(Duration.zero,
+                              //     index: player.nextIndex);
                               player.seekToNext();
                               ref.read(playerProvider.notifier).state++;
+                              print('Next button selected');
                             }
                           },
                           icon:

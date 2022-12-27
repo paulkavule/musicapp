@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/route_manager.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:musicapp1/dicontainer.dart';
 import 'package:musicapp1/models/playlist_model.dart';
 import 'package:musicapp1/models/song_model.dart';
@@ -16,6 +17,11 @@ import 'package:musicapp1/screens/song_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.example.musicapp1',
+    androidNotificationChannelName: 'Audio playback',
+    androidNotificationOngoing: true,
+  );
   await Hive.initFlutter();
 
   Hive.registerAdapter(SongAdapter());

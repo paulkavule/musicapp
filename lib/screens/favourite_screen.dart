@@ -4,7 +4,6 @@ import 'package:musicapp1/widgets/widgets.dart';
 
 import '../models/song_model.dart';
 import '../services/song_svc.dart';
-import '../widgets/widgets.dart';
 
 class FavouriteScreen extends StatelessWidget {
   FavouriteScreen({Key? key}) : super(key: key);
@@ -30,7 +29,7 @@ class FavouriteScreen extends StatelessWidget {
         ),
         body: SafeArea(
           child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(15.0),
               child: FutureBuilder<List<Song>>(
                   future: songSvc.getFavouriteSongs(),
                   builder: (context, playList) {

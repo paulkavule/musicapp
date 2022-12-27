@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:musicapp1/dicontainer.dart';
 import 'package:musicapp1/models/song_model.dart';
 import 'package:musicapp1/services/song_svc.dart';
@@ -30,8 +31,9 @@ class SongScreenState extends State<SongScreen> {
     // print('Song id: ${song.id}');
     var uri = getUriResource(song.url);
 
-    player.setAudioSource(
-        ConcatenatingAudioSource(children: [AudioSource.uri(uri!)]));
+    player.setAudioSource(ConcatenatingAudioSource(children: [
+      AudioSource.uri(uri, tag: MediaItem(id: '1', title: song.titlte))
+    ]));
   }
 
   @override
@@ -155,9 +157,9 @@ class _MusicPlayerState extends State<MusicPlayer> {
             },
           ),
           PlayButton(player: widget.player),
-          const SizedBox(
-            height: 30,
-          ),
+          // const SizedBox(
+          //   height: 30,
+          // ),
           // Row(
           //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
           //   crossAxisAlignment: CrossAxisAlignment.center,
