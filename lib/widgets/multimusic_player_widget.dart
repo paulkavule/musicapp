@@ -19,11 +19,15 @@ class MultiMusicPlayer extends ConsumerStatefulWidget {
 }
 
 class MultiMusicPlayerState extends ConsumerState<MultiMusicPlayer> {
-  final player = AudioPlayer();
+  AudioPlayer? player = AudioPlayer();
+
   int currentIndex = 0;
   @override
   void initState() {
     super.initState();
+
+    // player = ref.read(mzkPlyerProvider);
+
     List<AudioSource>? audioSource = [];
     int count = 1;
     for (var song in widget.playList) {
@@ -33,20 +37,20 @@ class MultiMusicPlayerState extends ConsumerState<MultiMusicPlayer> {
       count++;
     }
 
-    player.setAudioSource(ConcatenatingAudioSource(children: audioSource),
+    player!.setAudioSource(ConcatenatingAudioSource(children: audioSource),
         initialIndex: currentIndex);
     print('Songs loaded');
   }
 
   @override
   void dispose() {
-    player.dispose();
+    player?.dispose();
     super.dispose();
   }
 
   Stream<SeekBarDto> get seekBarStream =>
       rxdart.Rx.combineLatest2<Duration, Duration?, SeekBarDto>(
-          player.positionStream, player.durationStream, (
+          player!.positionStream, player!.durationStream, (
         Duration pst,
         Duration? dur,
       ) {
@@ -56,9 +60,9 @@ class MultiMusicPlayerState extends ConsumerState<MultiMusicPlayer> {
   @override
   Widget build(BuildContext context) {
     ref.listen<int>(playerProvider, (prev, next) async {
-      await player.seek(const Duration(seconds: 0), index: next);
-      if (player.playing == false) {
-        player.play();
+      await player!.seek(const Duration(seconds: 0), index: next);
+      if (player!.playing == false) {
+        player!.play();
       }
       // print('player => next index is   $next');
     });
@@ -82,12 +86,12 @@ class MultiMusicPlayerState extends ConsumerState<MultiMusicPlayer> {
                 ),
                 Expanded(child: Text(widget.playList[currentIndex].titlte)),
                 StreamBuilder<SequenceState?>(
-                    stream: player.sequenceStateStream,
+                    stream: player!.sequenceStateStream,
                     builder: (context, snapshot) {
                       return IconButton(
                           onPressed: () {
-                            if (player.hasPrevious) {
-                              player.seekToPrevious();
+                            if (player!.hasPrevious) {
+                              player!.seekToPrevious();
                               ref.read(playerProvider.notifier).state--;
                             }
                           },
@@ -100,7 +104,7 @@ class MultiMusicPlayerState extends ConsumerState<MultiMusicPlayer> {
                   width: 10,
                 ),
                 StreamBuilder(
-                  stream: player.playerStateStream,
+                  stream: player!.playerStateStream,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       final playerState = snapshot.data;
@@ -114,9 +118,9 @@ class MultiMusicPlayerState extends ConsumerState<MultiMusicPlayer> {
                           margin: const EdgeInsets.all(10.0),
                           child: const CircularProgressIndicator(),
                         );
-                      } else if (player.playing == false) {
+                      } else if (player!.playing == false) {
                         return IconButton(
-                            onPressed: () => player.play(),
+                            onPressed: () => player!.play(),
                             icon: const Icon(
                               Icons.play_circle,
                               color: Colors.orange,
@@ -125,15 +129,18 @@ class MultiMusicPlayerState extends ConsumerState<MultiMusicPlayer> {
                             constraints: const BoxConstraints());
                       } else if (processState != ProcessingState.completed) {
                         return IconButton(
-                            onPressed: () => player.pause(),
+                            onPressed: () => player!.pause(),
                             icon: const Icon(Icons.pause_circle,
                                 color: Colors.orange),
                             padding: const EdgeInsets.all(0.0),
                             constraints: const BoxConstraints());
                       }
                       return IconButton(
-                          onPressed: () => player.seek(Duration.zero,
-                              index: player.effectiveIndices!.first),
+                          onPressed: () {
+                            player!.seek(Duration.zero,
+                                index: player!.effectiveIndices!.first);
+                            ref.read(playerProvider.notifier).state = 0;
+                          },
                           icon: const Icon(Icons.replay_circle_filled_outlined,
                               color: Colors.orange),
                           padding: const EdgeInsets.all(0.0),
@@ -147,15 +154,15 @@ class MultiMusicPlayerState extends ConsumerState<MultiMusicPlayer> {
                   width: 10,
                 ),
                 StreamBuilder<SequenceState?>(
-                    stream: player.sequenceStateStream,
+                    stream: player!.sequenceStateStream,
                     builder: (context, snapshot) {
                       return IconButton(
                           onPressed: () async {
                             print('Next button clicked');
-                            if (player.hasNext) {
+                            if (player!.hasNext) {
                               // await player.seek(Duration.zero,
                               //     index: player.nextIndex);
-                              player.seekToNext();
+                              player!.seekToNext();
                               ref.read(playerProvider.notifier).state++;
                               print('Next button selected');
                             }
@@ -176,7 +183,7 @@ class MultiMusicPlayerState extends ConsumerState<MultiMusicPlayer> {
                   position: postionData?.position ?? Duration.zero,
                   duration: postionData?.duration ?? Duration.zero,
                   showTime: false,
-                  onChangEnd: player.seek,
+                  onChangEnd: player!.seek,
                 );
               },
             ),

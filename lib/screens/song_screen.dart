@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
@@ -12,17 +13,18 @@ import 'package:musicapp1/widgets/playbutton_widget.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
 
 import '../models/seekbar_model.dart';
+import '../providers/app_provider.dart';
 
-class SongScreen extends StatefulWidget {
+class SongScreen extends ConsumerStatefulWidget {
   final songSvc = getIT<ISongService>();
   SongScreen({Key? key}) : super(key: key);
 
   @override
-  State<SongScreen> createState() => SongScreenState();
+  SongScreenState createState() => SongScreenState();
 }
 
-class SongScreenState extends State<SongScreen> {
-  AudioPlayer player = AudioPlayer();
+class SongScreenState extends ConsumerState<SongScreen> {
+  AudioPlayer? player = AudioPlayer();
   Song song = Get.arguments ?? Song.songs[0];
 
   @override
@@ -30,21 +32,22 @@ class SongScreenState extends State<SongScreen> {
     super.initState();
     // print('Song id: ${song.id}');
     var uri = getUriResource(song.url);
+    // player = ref.read(mzkPlyerProvider);
 
-    player.setAudioSource(ConcatenatingAudioSource(children: [
+    player!.setAudioSource(ConcatenatingAudioSource(children: [
       AudioSource.uri(uri, tag: MediaItem(id: '1', title: song.titlte))
     ]));
   }
 
   @override
   void dispose() {
-    player.dispose();
+    player!.dispose();
     super.dispose();
   }
 
   Stream<SeekBarDto> get seekBarStream =>
       rxdart.Rx.combineLatest2<Duration, Duration?, SeekBarDto>(
-          player.positionStream, player.durationStream, (
+          player!.positionStream, player!.durationStream, (
         Duration pst,
         Duration? dur,
       ) {
@@ -66,7 +69,7 @@ class SongScreenState extends State<SongScreen> {
           MusicPlayer(
               song: song,
               seekBarStream: seekBarStream,
-              player: player,
+              player: player!,
               svc: widget.songSvc)
         ],
       ),
@@ -204,7 +207,7 @@ class BackgroundFilter extends StatelessWidget {
               Colors.white.withOpacity(0.5),
               Colors.white.withOpacity(0.0)
             ],
-            stops: [
+            stops: const [
               0.0,
               0.4,
               0.6

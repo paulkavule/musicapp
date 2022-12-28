@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:musicapp1/dicontainer.dart';
@@ -10,6 +11,7 @@ import '../widgets/widgets.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
+  User get user => Get.arguments;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,9 @@ class HomeScreen extends StatelessWidget {
           ])),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: const CustomAppBar(),
+        appBar: CustomAppBar(
+          user: user,
+        ),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -92,17 +96,21 @@ class TrendingSection extends StatelessWidget {
 
     return FutureBuilder<List<Song>>(
         future: songSvc.getMostRecentSongs(count: 4),
-        builder: (context, AsyncSnapshot<List<Song>> songs) {
-          var length = songs.data?.length ?? 100;
-          print('Data is gone:  $length ');
+        builder: (context, snaphot) {
+          if (snaphot.hasData == false) {
+            return const SizedBox(
+              height: 10,
+            );
+          }
+          var songs = snaphot.data!;
 
           return SizedBox(
             height: MediaQuery.of(context).size.height * 0.25,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: songs.data?.length,
+              itemCount: songs.length,
               itemBuilder: (context, index) {
-                return SongCard(song: songs.data![index]);
+                return SongCard(song: songs[index]);
               },
             ),
           );
@@ -194,11 +202,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
 }
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
-  const CustomAppBar({
-    Key? key,
-  }) : super(key: key);
-
-  @override
+  const CustomAppBar({Key? key, required this.user}) : super(key: key);
+  final User user;
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -208,9 +213,9 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
       actions: [
         Container(
           margin: const EdgeInsets.only(right: 20),
-          child: const CircleAvatar(
-            backgroundImage: NetworkImage(
-                'https://images.freeimages.com/images/large-previews/889/chef-1318790.jpg'
+          child: CircleAvatar(
+            backgroundImage: NetworkImage(user.photoURL!
+                // 'https://images.freeimages.com/images/large-previews/889/chef-1318790.jpg'
                 // 'https://cdn.pixabay.com/photo/2022/10/17/15/44/bird-7528089_960_720.jpg'
                 ),
           ),

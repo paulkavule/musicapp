@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/route_manager.dart';
@@ -7,6 +8,7 @@ import 'package:musicapp1/dicontainer.dart';
 import 'package:musicapp1/models/playlist_model.dart';
 import 'package:musicapp1/models/song_model.dart';
 import 'package:musicapp1/screens/favourite_screen.dart';
+import 'package:musicapp1/screens/first_screen.dart';
 import 'package:musicapp1/screens/home_screen.dart';
 import 'package:musicapp1/screens/play_list_manage.dart';
 import 'package:musicapp1/screens/playlist_dashboard.dart';
@@ -18,12 +20,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
   await JustAudioBackground.init(
-    androidNotificationChannelId: 'com.example.musicapp1',
+    androidNotificationChannelId: 'com.pkavule.mubimba',
     androidNotificationChannelName: 'Audio playback',
     androidNotificationOngoing: true,
   );
   await Hive.initFlutter();
-
   Hive.registerAdapter(SongAdapter());
   Hive.registerAdapter(PlayListAdapter());
   await Hive.openBox<Song>('songsdb');
@@ -45,9 +46,10 @@ class MyApp extends StatelessWidget {
               .apply(bodyColor: Colors.white, displayColor: Colors.white),
           primarySwatch: Colors.blue,
         ),
-        home: const HomeScreen(),
+        home: const FirstScreen(),
         getPages: [
-          GetPage(name: "/", page: () => const HomeScreen()),
+          GetPage(name: "/", page: () => const FirstScreen()),
+          GetPage(name: "/home", page: () => const HomeScreen()),
           GetPage(name: "/song", page: () => SongScreen()),
           GetPage(name: "/playlist", page: () => const PlaylistScreen()),
           GetPage(name: "/favourite", page: () => FavouriteScreen()),
