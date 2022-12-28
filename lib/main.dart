@@ -15,6 +15,7 @@ import 'package:musicapp1/screens/playlist_dashboard.dart';
 import 'package:musicapp1/screens/playlist_screen.dart';
 import 'package:musicapp1/screens/recently_screen.dart';
 import 'package:musicapp1/screens/song_screen.dart';
+import 'package:musicapp1/screens/user_profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,7 +57,9 @@ class MyApp extends StatelessWidget {
           GetPage(
               name: "/mngplaylist", page: () => const PlayListManageScreen()),
           GetPage(name: "/dataplaylist", page: () => const PlaylistDashboard()),
-          GetPage(name: '/recentlyadded', page: () => const RecentlyAddScreen())
+          GetPage(
+              name: '/recentlyadded', page: () => const RecentlyAddScreen()),
+          GetPage(name: '/profile', page: () => const UserProfileScreen())
         ]);
   }
 }

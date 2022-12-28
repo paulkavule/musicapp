@@ -53,7 +53,9 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ),
-        bottomNavigationBar: const CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          user: user,
+        ),
       ),
     );
   }
@@ -167,10 +169,9 @@ class TopHeader extends StatelessWidget {
 }
 
 class CustomBottomNavigationBar extends StatelessWidget {
-  const CustomBottomNavigationBar({
-    Key? key,
-  }) : super(key: key);
-
+  const CustomBottomNavigationBar({Key? key, required this.user})
+      : super(key: key);
+  final User user;
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
@@ -193,7 +194,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
             Get.toNamed("/favourite");
             break;
           case 2:
-            Get.toNamed("/profile");
+            Get.toNamed("/profile", arguments: user);
             break;
         }
       },
