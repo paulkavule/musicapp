@@ -128,8 +128,8 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-            Colors.deepPurple.shade800.withOpacity(0.8),
-            Colors.deepPurple.shade200.withOpacity(0.8)
+            Colors.brown.shade800.withOpacity(0.8),
+            Colors.brown.shade200.withOpacity(0.8)
           ])),
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -264,7 +264,7 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
                 onPressed: () {
                   _pickFile();
                 },
-                backgroundColor: Colors.deepPurple,
+                backgroundColor: Colors.brown,
                 child: const Icon(Icons.file_copy),
               ),
               const SizedBox(
@@ -275,7 +275,7 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
                 onPressed: () {
                   _pickDirectory();
                 },
-                backgroundColor: Colors.deepPurple,
+                backgroundColor: Colors.brown,
                 child: const Icon(Icons.folder),
               ),
             ]),

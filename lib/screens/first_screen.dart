@@ -75,7 +75,9 @@ class FirstScreen extends StatelessWidget {
                 ),
                 const Spacer(),
                 TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.toNamed('/mngplaylist');
+                    },
                     style: TextButton.styleFrom(foregroundColor: Colors.white),
                     child: const Text('Quick Start')),
                 FutureBuilder(
