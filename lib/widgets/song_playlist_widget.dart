@@ -14,10 +14,10 @@ class SongPlayListWidget extends ConsumerStatefulWidget {
   final List<Song> songsList;
   final double playlistMaxHeight;
   @override
-  _SongPlayListWidgetState createState() => _SongPlayListWidgetState();
+  SongPlayListWidgetState createState() => SongPlayListWidgetState();
 }
 
-class _SongPlayListWidgetState extends ConsumerState<SongPlayListWidget> {
+class SongPlayListWidgetState extends ConsumerState<SongPlayListWidget> {
   onTapped(int index) {
     ref.read(playerProvider.notifier).state = index;
   }

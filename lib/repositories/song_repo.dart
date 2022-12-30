@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
-import 'package:musicapp1/models/playlist_model.dart';
+// import 'package:musicapp1/models/playlist_model.dart';
 
 import '../models/song_model.dart';
 
@@ -14,7 +14,7 @@ abstract class ISongRepository {
 
 @Injectable(as: ISongRepository)
 class SongRepository implements ISongRepository {
-  Box<Song> songTb = Hive.box('songsdb');
+  Box<Song> songTb = Hive.box('cpm_songsdb');
   SongRepository();
 
   @override

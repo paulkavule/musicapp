@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:musicapp1/dicontainer.dart';
 import 'package:musicapp1/models/playlist_model.dart';
+import 'package:musicapp1/providers/app_provider.dart';
 import 'package:musicapp1/services/playlist_svc.dart';
 import 'package:musicapp1/services/song_svc.dart';
 
@@ -11,7 +13,13 @@ import '../widgets/widgets.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
-  User get user => Get.arguments;
+  User get user {
+    var user = Get.arguments;
+    if (user == null) {
+      Get.back();
+    }
+    return user as User;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,24 +69,38 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class PlayListSection extends StatelessWidget {
+class PlayListSection extends ConsumerStatefulWidget {
   const PlayListSection({Key? key}) : super(key: key);
-  get plSvc => getIT<IPlaylistService>();
+
+  @override
+  PlayListSectionState createState() => PlayListSectionState();
+}
+
+class PlayListSectionState extends ConsumerState<PlayListSection>
+    with WidgetsBindingObserver {
+  IPlaylistService get plSvc => getIT<IPlaylistService>();
+  List<PlayList> playLists = [];
+
   @override
   Widget build(BuildContext context) {
+    playLists = ref.watch(appPlayList);
+
     return FutureBuilder<List<PlayList>>(
         future: plSvc.getPlayList(),
         builder: (context, snapshot) {
           if (snapshot.hasData == false) {
             return const Text('Please wait');
           }
-          var playLists = snapshot.data!.take(4).toList();
+          playLists = snapshot.data!.take(4).toList();
           return ListView.builder(
               itemCount: playLists.length,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: ((context, index) {
-                return PlayListCard(playList: playLists[index]);
+                return PlayListCard(
+                  playList: playLists[index],
+                  btnClicked: () {},
+                );
               }));
         });
   }

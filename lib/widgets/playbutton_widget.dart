@@ -34,8 +34,7 @@ class PlayButton extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final playerState = snapshot.data;
-              final processState =
-                  (playerState! as PlayerState).processingState;
+              final processState = (playerState!).processingState;
 
               if (processState == ProcessingState.loading ||
                   processState == ProcessingState.buffering) {
@@ -73,7 +72,7 @@ class PlayButton extends StatelessWidget {
                     size: 75,
                   ));
             } else {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
           },
         ),

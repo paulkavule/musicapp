@@ -40,7 +40,7 @@ Uri getUriResource(String uri) {
 }
 
 extension StringExtension on String {
-  String capitalize() {
+  String capitalized() {
     final capitalizedWords = split(' ').map((word) {
       if (word.trim().isNotEmpty) {
         final String firstLetter = word.trim().substring(0, 1).toUpperCase();

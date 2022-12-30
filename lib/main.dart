@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/route_manager.dart';
@@ -28,8 +27,8 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(SongAdapter());
   Hive.registerAdapter(PlayListAdapter());
-  await Hive.openBox<Song>('songsdb');
-  await Hive.openBox<PlayList>('playlistdb');
+  await Hive.openBox<Song>('cpm_songsdb');
+  await Hive.openBox<PlayList>('cpm_playlistdb');
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -50,7 +49,7 @@ class MyApp extends StatelessWidget {
         home: const FirstScreen(),
         getPages: [
           GetPage(name: "/", page: () => const FirstScreen()),
-          GetPage(name: "/home", page: () => const HomeScreen()),
+          GetPage(name: "/homed", page: () => const HomeScreen()),
           GetPage(name: "/song", page: () => SongScreen()),
           GetPage(name: "/playlist", page: () => const PlaylistScreen()),
           GetPage(name: "/favourite", page: () => FavouriteScreen()),

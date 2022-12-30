@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
@@ -13,7 +11,6 @@ import 'package:musicapp1/widgets/playbutton_widget.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
 
 import '../models/seekbar_model.dart';
-import '../providers/app_provider.dart';
 
 class SongScreen extends ConsumerStatefulWidget {
   final songSvc = getIT<ISongService>();
@@ -133,7 +130,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
               onPressed: () {
                 // context.widget.so
                 // context.widget.
-                print('Favourite: ${widget.song.isFavourite}');
+                // print('Favourite: ${widget.song.isFavourite}');
                 setState(() {
                   favourite = !favourite;
                 });

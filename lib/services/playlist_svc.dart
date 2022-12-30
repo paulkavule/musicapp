@@ -11,7 +11,7 @@ import '../models/song_model.dart';
 import '../repositories/song_repo.dart';
 
 abstract class IPlaylistService {
-  savePlayList(String name, String coverUrl);
+  Future<void> savePlayList(String name, String coverUrl);
   Future<List<Song>> getPlayListSongs(String playlistName);
   Future<List<PlayList>> getPlayList();
 
@@ -34,12 +34,11 @@ class PlaylistService implements IPlaylistService {
     var playList = await plistRepo.getDetailedPlayLists();
     var songList = await songRepo.getSongs();
     for (var item in playList) {
-      final playSongs = songList
-          .where((sg) =>
-              sg.playList.contains(item.title) && File(sg.url).existsSync())
-          .toList();
+      final playSongs =
+          songList.where((sg) => sg.playList.contains(item.title)).toList();
       item.songs = playSongs;
     }
+    print('get_play_list: ${playList.length}');
     return playList;
   }
 

@@ -2,31 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:musicapp1/dicontainer.dart';
 import 'package:musicapp1/services/playlist_svc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/playlist_model.dart';
+import '../providers/app_provider.dart';
 import '../widgets/playlistcard_widget.dart';
 
-class PlaylistDashboard extends StatefulWidget {
+class PlaylistDashboard extends ConsumerStatefulWidget {
   const PlaylistDashboard({Key? key}) : super(key: key);
 
   @override
-  State<PlaylistDashboard> createState() => _PlaylistDashboardState();
+  PlaylistDashboardState createState() => PlaylistDashboardState();
 }
 
-class _PlaylistDashboardState extends State<PlaylistDashboard> {
+class PlaylistDashboardState extends ConsumerState<PlaylistDashboard> {
   var playlistSvc = getIT<IPlaylistService>();
-  List<PlayList> playLists = [];
+  // List<PlayList> playLists = [];
 
   @override
   Widget build(BuildContext context) {
+    var playLists = ref.watch(appPlayList);
+
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-            Colors.deepPurple.shade800.withOpacity(0.8),
-            Colors.deepPurple.shade200.withOpacity(0.8)
+            Colors.brown.shade800.withOpacity(0.8),
+            Colors.brown.shade200.withOpacity(0.8)
           ])),
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -36,8 +40,28 @@ class _PlaylistDashboardState extends State<PlaylistDashboard> {
           title: const Text('Playlist'),
           actions: [
             IconButton(
-                onPressed: () {
-                  Get.toNamed('/mngplaylist');
+                onPressed: () async {
+                  // await Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) =>const PlayListManageScreen(),
+                  //     ));
+                  await Get.toNamed('/mngplaylist');
+                  await playlistSvc.getPlayList().then((value) {
+                    print(
+                        'Data: new: ${value.length} , old: ${playLists.length}');
+                    ref.read(appPlayList.notifier).refereshData(value);
+                  });
+
+                  // var result = (await Get.toNamed('/mngplaylist')) as bool;
+                  // print("result: $result, ${result.runtimeType}");
+                  // if (result) {
+                  //   setState(() {
+                  //     playlistSvc.getPlayList().then((value) {
+                  //       ref.read(appPlayList.notifier).state = value;
+                  //     });
+                  //   });
+                  // }
                 },
                 icon: const Icon(
                   Icons.add_circle_rounded,
@@ -58,6 +82,7 @@ class _PlaylistDashboardState extends State<PlaylistDashboard> {
                   if (snapshot.hasData == false) {
                     return const Text('Please wait');
                   }
+                  print('Fetched Data: ${playLists.length}');
                   playLists = snapshot.data!;
                   return ListView.builder(
                       itemCount: playLists.length,
@@ -67,6 +92,15 @@ class _PlaylistDashboardState extends State<PlaylistDashboard> {
                         return PlayListCard(
                           playList: playLists[index],
                           homeScreen: false,
+                          btnClicked: () {
+                            //
+                            setState(() {
+                              playlistSvc.deleteItem(playLists[index].uuid!);
+                              ref
+                                  .read(appPlayList.notifier)
+                                  .removeData(playLists[index].uuid!);
+                            });
+                          },
                         );
                       }));
                 },
@@ -84,7 +118,6 @@ class _PlaylistDashboardState extends State<PlaylistDashboard> {
     );
   }
 }
-
 
 //  return ListView.separated(
 //                     shrinkWrap: true,
@@ -133,4 +166,3 @@ class _PlaylistDashboardState extends State<PlaylistDashboard> {
 //                       );
 //                     },
 //                   );
-                

@@ -5,10 +5,15 @@ import '../models/playlist_model.dart';
 import '../utilities/helpers.dart';
 
 class PlayListCard extends StatelessWidget {
-  const PlayListCard({Key? key, required this.playList, this.homeScreen = true})
+  const PlayListCard(
+      {Key? key,
+      required this.playList,
+      this.homeScreen = true,
+      required this.btnClicked})
       : super(key: key);
   final bool homeScreen;
   final PlayList playList;
+  final Function btnClicked;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +28,7 @@ class PlayListCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
-            color: Colors.deepPurple.shade800.withOpacity(0.85),
+            color: Colors.brown.shade800.withOpacity(0.85),
             borderRadius: BorderRadius.circular(15.0)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -61,10 +66,12 @@ class PlayListCard extends StatelessWidget {
                     onPressed: () {},
                     icon: const Icon(
                       Icons.play_circle,
-                      color: Colors.white,
+                      color: Colors.transparent,
                     ))
                 : IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      btnClicked();
+                    },
                     icon: const Icon(
                       Icons.delete,
                       color: Colors.white,

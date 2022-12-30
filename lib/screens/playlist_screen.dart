@@ -26,7 +26,7 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
     //   //     title: 'Ops', message: 'Playlist does not contain any songs');
 
     // }
-    print('Playlist facts ${playList.songs!.length}');
+    // print('Playlist facts ${playList.songs!.length}');
     var songs = playList.songs!;
     return Container(
       constraints: const BoxConstraints.expand(),

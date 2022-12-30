@@ -3,9 +3,13 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:mime/mime.dart';
 import 'package:musicapp1/dicontainer.dart';
+// import 'package:musicapp1/models/playlist_model.dart';
 import 'package:musicapp1/services/song_svc.dart';
-// import 'package:path_provider/path_provider.dart' as pather;
+// import 'package:permission_handler/permission_handler.dart';
+import 'package:uuid/uuid.dart';
 import '../models/song_model.dart';
 import '../services/playlist_svc.dart';
 import '../utilities/helpers.dart';
@@ -29,94 +33,145 @@ class PlayListManageScreen extends StatefulWidget {
 class _PlayListManageStateScreen extends State<PlayListManageScreen> {
   List<Song> songList = [];
   bool enableCtrls = false;
-  String coverUrl = "";
+  String coverUrl = "", playlistName = "";
   var songSvc = getIT<ISongService>();
   var playListSvc = getIT<IPlaylistService>();
-  final unameField = TextEditingController();
+  // final unameField = TextEditingController();
+
+  // Future<String> createFolder(String cow) async {
+  //   final dir = Directory((Platform.isAndroid
+  //               ? await getExternalStorageDirectory() //FOR ANDROID
+  //               : await getApplicationSupportDirectory() //FOR IOS
+  //           )!
+  //           .path +
+  //       '/$cow');
+  //   var status = await Permission.storage.status;
+  //   if (!status.isGranted) {
+  //     await Permission.storage.request();
+  //   }
+  //   if ((await dir.exists())) {
+  //     return dir.path;
+  //   } else {
+  //     dir.create();
+  //     return dir.path;
+  //   }
+  // }
+
   void _pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    // var dirPath = await createFolder('Mubimba');
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(allowMultiple: true);
     // type: FileType.custom,
     // allowedExtensions: ['mp3'],
     // allowMultiple: false);
-    if (result == null || result.files.single.path == null) {
+    if (result == null || result.files.isEmpty) {
       return;
     }
-    print('File gotten');
+    // print('DirPath, $dirPath');
     // var file = result.files.first;
     // print('FileData => Name: ${file.name}, Path:${file.path}');
-    var file = File(result.files.single.path!);
-
-    if (file.path.split('.').last != "mp3") {
-      return;
-    }
-    // final tagger = Audiotagger();
-    // var tags = await tagger.readTagsAsMap(path: result.files.single.path!);
-    // for (var key in tags!.keys) {
-    //   print('Key: $key value: ${tags[key]}');
-    // }
-    setState(() {
-      songList.add(Song(
-          titlte: file.uri.pathSegments.last,
-          description: file.path,
-          url: file.path,
-          coverUrl: coverUrl));
-    });
-  }
-
-  void _pickDirectory() async {
-    var directory = await FilePicker.platform.getDirectoryPath();
-    if (directory == null) {
-      return;
-    }
-
-    var dir = Directory(directory);
-    var files = await dir.list().toList();
-    for (var fileInt in files) {
-      if (fileInt.path.split('.').last.toLowerCase() == 'png') {
-        coverUrl = fileInt.path;
-        break;
-      }
-    }
-
-    // if (coverPhoto.path.length > 10) {
-    //   coverUrl = coverPhoto.path;
-    // }
-
-    for (var fileInst in files) {
-      if (Directory(fileInst.path).existsSync()) {
-        continue;
-      }
-      var file = File(fileInst.path);
-
-      if (file.path.split('.').last != "mp3") {
-        continue;
-      }
-
+    // result.files.where((ff) => ff.)
+    for (var fl in result.files) {
+      var file = File(fl.path!);
+      var mtype = lookupMimeType(file.path);
+      print('mimetype: $mtype');
       setState(() {
         songList.add(Song(
-            titlte: file.uri.pathSegments.last.capitalize(),
+            titlte: file.uri.pathSegments.last,
+            uuid: const Uuid().v4(),
             description: file.path,
             url: file.path,
             coverUrl: coverUrl));
       });
-      print('FileData => Name: ${file.uri.pathSegments.last}, ');
+    }
+    // var file = File(result.files.single.path!);
+
+    // if (file.path.split('.').last != "mp3") {
+    //   return;
+    // }
+    // // final tagger = Audiotagger();
+    // // var tags = await tagger.readTagsAsMap(path: result.files.single.path!);
+    // // for (var key in tags!.keys) {
+    // //   print('Key: $key value: ${tags[key]}');
+    // // }
+    // setState(() {
+    //   songList.add(Song(
+    //       titlte: file.uri.pathSegments.last,
+    //       description: file.path,
+    //       url: file.path,
+    //       coverUrl: coverUrl));
+    // });
+  }
+
+  void _pickDirectory(BuildContext context) async {
+    var directory = await FilePicker.platform.getDirectoryPath();
+    if (directory == null) {
+      return;
+    }
+    try {
+      var dir = Directory(directory);
+      var files = await dir.list().toList();
+      for (var fileInt in files) {
+        if (fileInt.path.split('.').last.toLowerCase() == 'png') {
+          coverUrl = fileInt.path;
+          break;
+        }
+      }
+
+      // if (coverPhoto.path.length > 10) {
+      //   coverUrl = coverPhoto.path;
+      // }
+
+      for (var fileInst in files) {
+        if (Directory(fileInst.path).existsSync()) {
+          continue;
+        }
+        var file = File(fileInst.path);
+
+        if (file.path.split('.').last != "mp3") {
+          continue;
+        }
+
+        setState(() {
+          songList.add(Song(
+              titlte: file.uri.pathSegments.last.capitalized(),
+              description: file.path,
+              url: file.path,
+              coverUrl: coverUrl));
+        });
+        // print('FileData => Name: ${file.uri.pathSegments.last}, ');
+      }
+    } on FileSystemException catch (e) {
+      // print(e.toString());
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: Colors.black,
+        content: Text(
+          e.toString(),
+          style: const TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
+        ),
+      ));
     }
   }
 
-  void _savePlayList() {
+  void _savePlayList() async {
     coverUrl =
         coverUrl.isEmpty ? "assets/images/music_placeholder.png" : coverUrl;
+    // final pltitle = unameField.text.capitalized();
 
-    if (unameField.text.isEmpty == false) {
-      playListSvc.savePlayList(unameField.text.capitalize(), coverUrl);
+    if (playlistName.isEmpty == false) {
+      await playListSvc.savePlayList(playlistName.capitalized(), coverUrl);
     }
     for (var data in songList) {
-      data.playList = [unameField.text.capitalize()];
+      data.playList = [playlistName.capitalized()];
       data.coverUrl = data.coverUrl.isEmpty
           ? "assets/images/music_placeholder.png"
           : data.coverUrl;
-      songSvc.saveSong(data);
+      await songSvc.saveSong(data);
     }
+    // var playList= PlayList(title: _pltitle, imageUrl: coverUrl);
+    // if(result.)
+    final executed = playlistName.isNotEmpty || songList.isNotEmpty;
+    Get.back(result: executed);
   }
 
   @override
@@ -141,8 +196,8 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
             IconButton(
               onPressed: enableCtrls == false
                   ? null
-                  : () {
-                      if (unameField.text.isEmpty) {
+                  : () async {
+                      if (playlistName.isEmpty) {
                         showCupertinoDialog(
                             context: context,
                             builder: (BuildContext ctx) {
@@ -156,9 +211,6 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
                                   CupertinoDialogAction(
                                     onPressed: () {
                                       _savePlayList();
-                                      setState(() {
-                                        Navigator.of(context).pop();
-                                      });
                                     },
                                     isDefaultAction: true,
                                     isDestructiveAction: true,
@@ -199,13 +251,16 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
               const SizedBox(
                 height: 20,
               ),
-              TextFormField(
+              TextField(
+                  onChanged: (value) => {
+                        setState(() {
+                          playlistName = value;
+                        })
+                      },
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge!
                       .copyWith(color: Colors.black),
-                  controller: unameField,
-                  enabled: enableCtrls,
                   decoration: InputDecoration(
                       isDense: true,
                       filled: true,
@@ -219,6 +274,27 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
                           borderSide: BorderSide.none))),
+              // TextFormField(
+              //     style: Theme.of(context)
+              //         .textTheme
+              //         .bodyLarge!
+              //         .copyWith(color: Colors.black),
+              //     controller: unameField,
+              //     enabled: enableCtrls,
+              //     onTap: () {},
+              //     decoration: InputDecoration(
+              //         isDense: true,
+              //         filled: true,
+              //         fillColor:
+              //             enableCtrls ? Colors.white : Colors.grey.shade300,
+              //         hintText: 'Playlist name',
+              //         hintStyle: Theme.of(context)
+              //             .textTheme
+              //             .bodyMedium!
+              //             .copyWith(color: Colors.grey.shade400),
+              //         border: OutlineInputBorder(
+              //             borderRadius: BorderRadius.circular(8.0),
+              //             borderSide: BorderSide.none))),
               const SizedBox(
                 height: 30,
               ),
@@ -270,14 +346,14 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
               const SizedBox(
                 width: 10,
               ),
-              FloatingActionButton(
-                heroTag: 'btn2',
-                onPressed: () {
-                  _pickDirectory();
-                },
-                backgroundColor: Colors.brown,
-                child: const Icon(Icons.folder),
-              ),
+              // FloatingActionButton(
+              //   heroTag: 'btn2',
+              //   onPressed: () {
+              //     _pickDirectory(context);
+              //   },
+              //   backgroundColor: Colors.brown,
+              //   child: const Icon(Icons.folder),
+              // ),
             ]),
       ),
     );

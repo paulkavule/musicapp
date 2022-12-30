@@ -100,7 +100,8 @@ class FirstScreen extends StatelessWidget {
                             ),
                           );
                         } else {
-                          Get.toNamed('/home', arguments: user);
+                          print('Home called again');
+                          Get.toNamed('/homed', arguments: user);
                         }
                       },
                       icon: const FaIcon(
