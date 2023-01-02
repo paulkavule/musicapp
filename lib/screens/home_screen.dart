@@ -12,14 +12,23 @@ import '../models/song_model.dart';
 import '../widgets/widgets.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-  User get user {
-    var user = Get.arguments;
-    if (user == null) {
-      Get.back();
-    }
-    return user as User;
-  }
+  HomeScreen({Key? key}) : super(key: key);
+  User user = Get.arguments;
+  // User? get user {
+  //   try {
+  //     var user = Get.arguments;
+  //     if (user == null) {
+  //       Get.back();
+  //     }
+  //     if (user is User == false) {
+  //       Get.back();
+  //     }
+  //     print('User type is ${user.runtimeType}');
+  //     return user; //as User;
+  //   } catch (ex) {
+  //     return null;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +44,7 @@ class HomeScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: CustomAppBar(
-          user: user,
+          user: user!,
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -62,7 +71,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
         bottomNavigationBar: CustomBottomNavigationBar(
-          user: user,
+          user: user!,
         ),
       ),
     );

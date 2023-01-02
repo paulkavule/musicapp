@@ -52,18 +52,18 @@ class SongService implements ISongService {
   void loadInitialSongs() {
     var song1 = Song(
         coverUrl: "assets/images/glass.png",
-        titlte: "Glass",
+        title: "Glass",
         url: "assets/music/glass.mp3",
         description: "Glass");
 
     var song2 = Song(
         coverUrl: "assets/images/illusions.png",
-        titlte: "Illussions",
+        title: "Illussions",
         url: "assets/music/illussions.mp3",
         description: "Illussions");
     var song3 = Song(
         coverUrl: "assets/images/pray.png",
-        titlte: "Pray",
+        title: "Pray",
         url: "assets/music/pray.mp3",
         description: "Praying");
 

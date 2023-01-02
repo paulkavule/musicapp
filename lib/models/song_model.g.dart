@@ -17,7 +17,7 @@ class SongAdapter extends TypeAdapter<Song> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Song(
-      titlte: fields[0] as String,
+      title: fields[0] as String,
       description: fields[1] as String,
       url: fields[2] as String,
       coverUrl: fields[3] as String,
@@ -35,7 +35,7 @@ class SongAdapter extends TypeAdapter<Song> {
     writer
       ..writeByte(10)
       ..writeByte(0)
-      ..write(obj.titlte)
+      ..write(obj.title)
       ..writeByte(1)
       ..write(obj.description)
       ..writeByte(2)

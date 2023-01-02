@@ -12,8 +12,10 @@ import 'package:musicapp1/screens/home_screen.dart';
 import 'package:musicapp1/screens/play_list_manage.dart';
 import 'package:musicapp1/screens/playlist_dashboard.dart';
 import 'package:musicapp1/screens/playlist_screen.dart';
+import 'package:musicapp1/screens/playlist_screen2.dart';
 import 'package:musicapp1/screens/recently_screen.dart';
 import 'package:musicapp1/screens/song_screen.dart';
+import 'package:musicapp1/screens/test_screen.dart';
 import 'package:musicapp1/screens/user_profile_screen.dart';
 
 void main() async {
@@ -48,10 +50,10 @@ class MyApp extends StatelessWidget {
         ),
         home: const FirstScreen(),
         getPages: [
-          GetPage(name: "/", page: () => const FirstScreen()),
-          GetPage(name: "/homed", page: () => const HomeScreen()),
+          GetPage(name: "/first", page: () => const FirstScreen()),
+          GetPage(name: "/home", page: () => HomeScreen()),
           GetPage(name: "/song", page: () => SongScreen()),
-          GetPage(name: "/playlist", page: () => const PlaylistScreen()),
+          GetPage(name: "/playlist", page: () => PlaylistScreen2()),
           GetPage(name: "/favourite", page: () => FavouriteScreen()),
           GetPage(
               name: "/mngplaylist", page: () => const PlayListManageScreen()),

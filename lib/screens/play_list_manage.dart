@@ -10,6 +10,7 @@ import 'package:musicapp1/dicontainer.dart';
 import 'package:musicapp1/services/song_svc.dart';
 // import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
+import 'package:path_provider/path_provider.dart';
 import '../models/song_model.dart';
 import '../services/playlist_svc.dart';
 import '../utilities/helpers.dart';
@@ -59,6 +60,7 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
 
   void _pickFile() async {
     // var dirPath = await createFolder('Mubimba');
+
     FilePickerResult? result =
         await FilePicker.platform.pickFiles(allowMultiple: true);
     // type: FileType.custom,
@@ -72,35 +74,41 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
     // print('FileData => Name: ${file.name}, Path:${file.path}');
     // result.files.where((ff) => ff.)
     for (var fl in result.files) {
-      var file = File(fl.path!);
-      var mtype = lookupMimeType(file.path);
-      print('mimetype: $mtype');
+      var filePath = fl.path!;
+      var mtype = lookupMimeType(filePath);
+      if (mtype == null) {
+        continue;
+      }
+      if (!(mtype.startsWith('audio') || mtype.startsWith('image'))) {
+        continue;
+      }
+      final dir = Platform.isAndroid
+          ? await getExternalStorageDirectory() //FOR ANDROID
+          : await getApplicationSupportDirectory(); //FOR IOS
+
+      var file = File(filePath);
+      var fpath = '${dir!.path}/${fl.name}';
+      await file.copy(fpath);
+
+      if (mtype.startsWith('image')) {
+        coverUrl = fpath;
+        continue;
+      }
+
+      print('Song=> mimetype:$mtype , path: ${file.path}');
+
+      // print('path1: ${fl.path}');
+      // print('path2: ${file.absolute.path}\n\n');
+      // print('path3: ${Uri.dataFromString(file.path)}\n\n');
       setState(() {
         songList.add(Song(
-            titlte: file.uri.pathSegments.last,
+            title: file.uri.pathSegments.last,
             uuid: const Uuid().v4(),
             description: file.path,
-            url: file.path,
+            url: fpath,
             coverUrl: coverUrl));
       });
     }
-    // var file = File(result.files.single.path!);
-
-    // if (file.path.split('.').last != "mp3") {
-    //   return;
-    // }
-    // // final tagger = Audiotagger();
-    // // var tags = await tagger.readTagsAsMap(path: result.files.single.path!);
-    // // for (var key in tags!.keys) {
-    // //   print('Key: $key value: ${tags[key]}');
-    // // }
-    // setState(() {
-    //   songList.add(Song(
-    //       titlte: file.uri.pathSegments.last,
-    //       description: file.path,
-    //       url: file.path,
-    //       coverUrl: coverUrl));
-    // });
   }
 
   void _pickDirectory(BuildContext context) async {
@@ -134,7 +142,7 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
 
         setState(() {
           songList.add(Song(
-              titlte: file.uri.pathSegments.last.capitalized(),
+              title: file.uri.pathSegments.last.capitalized(),
               description: file.path,
               url: file.path,
               coverUrl: coverUrl));
@@ -154,13 +162,13 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
   }
 
   void _savePlayList() async {
-    coverUrl =
-        coverUrl.isEmpty ? "assets/images/music_placeholder.png" : coverUrl;
-    // final pltitle = unameField.text.capitalized();
-
     if (playlistName.isEmpty == false) {
+      coverUrl =
+          coverUrl.isEmpty ? "assets/images/music_placeholder.png" : coverUrl;
+
       await playListSvc.savePlayList(playlistName.capitalized(), coverUrl);
     }
+
     for (var data in songList) {
       data.playList = [playlistName.capitalized()];
       data.coverUrl = data.coverUrl.isEmpty
@@ -253,9 +261,9 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
               ),
               TextField(
                   onChanged: (value) => {
-                        setState(() {
-                          playlistName = value;
-                        })
+                        // setState(() {
+                        //   playlistName = value;
+                        // })
                       },
                   style: Theme.of(context)
                       .textTheme
@@ -311,7 +319,7 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
                   return ListTile(
                     leading: ClipRRect(
                         borderRadius: BorderRadius.circular(10), child: image),
-                    title: Text(songList[index].titlte),
+                    title: Text(songList[index].title),
                     // subtitle: const Text('Hellos'),
                     trailing: IconButton(
                       onPressed: () {

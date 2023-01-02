@@ -52,7 +52,7 @@ class SongCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        song.titlte.truncate(8, placeholder: '...'),
+                        song.title.truncate(8, placeholder: '...'),
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             color: Colors.purple, fontWeight: FontWeight.bold),
                       ),

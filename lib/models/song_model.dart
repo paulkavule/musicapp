@@ -5,7 +5,7 @@ part 'song_model.g.dart';
 @HiveType(typeId: 1)
 class Song {
   @HiveField(0)
-  final String titlte;
+  final String title;
   @HiveField(1)
   final String description;
   @HiveField(2)
@@ -25,7 +25,7 @@ class Song {
   @HiveField(9)
   String uuid;
   Song(
-      {required this.titlte,
+      {required this.title,
       required this.description,
       required this.url,
       required this.coverUrl,
@@ -37,17 +37,17 @@ class Song {
   static List<Song> songs = [
     Song(
         coverUrl: "assets/images/glass.png",
-        titlte: "Glass",
+        title: "Glass",
         url: "assets/music/glass.mp3",
         description: "Glass"),
     Song(
         coverUrl: "assets/images/illusions.png",
-        titlte: "Illussions",
+        title: "Illussions",
         url: "assets/music/illussions.mp3",
         description: "Illussions"),
     Song(
         coverUrl: "assets/images/pray.png",
-        titlte: "Pray",
+        title: "Pray",
         url: "assets/music/pray.mp3",
         description: "Praying"),
   ];

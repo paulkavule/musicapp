@@ -30,7 +30,7 @@ class CustomListTile extends StatelessWidget {
               .copyWith(fontWeight: FontWeight.bold),
         ),
         title: Text(
-          listSong.titlte,
+          listSong.title,
           style: Theme.of(context)
               .textTheme
               .bodyLarge!
@@ -99,7 +99,7 @@ class CustomListTile extends StatelessWidget {
           onSelected: (value) {
             switch (value) {
               case 1:
-                print('Uuid: ${listSong.titlte}, index: $index');
+                print('Uuid: ${listSong.title}, index: $index');
                 // widget.songSv.markUnmarkAsFavourite(
                 //     listSong.id, !listSong.isFavourite);
                 break;

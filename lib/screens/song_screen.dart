@@ -32,7 +32,7 @@ class SongScreenState extends ConsumerState<SongScreen> {
     // player = ref.read(mzkPlyerProvider);
 
     player!.setAudioSource(ConcatenatingAudioSource(children: [
-      AudioSource.uri(uri, tag: MediaItem(id: '1', title: song.titlte))
+      AudioSource.uri(uri, tag: MediaItem(id: '1', title: song.title))
     ]));
   }
 
@@ -105,7 +105,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
         // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            widget.song.titlte.truncate(10, placeholder: '..'),
+            widget.song.title.truncate(10, placeholder: '..'),
             style: Theme.of(context)
                 .textTheme
                 .headlineLarge!
@@ -115,9 +115,9 @@ class _MusicPlayerState extends State<MusicPlayer> {
             height: 10,
           ),
           Text(
-            widget.song.titlte.length > 10
+            widget.song.title.length > 10
                 ? widget.song
-                    .titlte //'${widget.song.titlte}\n${widget.song.description.truncate(30, placeholder: '...')}'
+                    .title //'${widget.song.titlte}\n${widget.song.description.truncate(30, placeholder: '...')}'
                 : widget.song.description.truncate(30, placeholder: '...'),
             style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                   color: Colors.white,

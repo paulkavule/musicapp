@@ -36,7 +36,12 @@ DecorationImage getDecorationImage(String filePath) {
 }
 
 Uri getUriResource(String uri) {
-  return uri.contains('assets') ? Uri.parse('asset:///$uri') : Uri.file(uri);
+  print('The URI: $uri');
+  return uri.contains('assets')
+      ? Uri.parse('asset:///$uri')
+      : Uri.file(
+          uri,
+        );
 }
 
 extension StringExtension on String {

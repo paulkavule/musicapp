@@ -21,10 +21,20 @@ class SignUpApi {
     FirebaseApp firebaseApp = await Firebase.initializeApp();
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      Get.toNamed('/home', arguments: user);
+      try {
+        Get.toNamed('/home', arguments: user);
+      } catch (e) {
+        print(e.toString());
+      }
     }
 
     return firebaseApp;
+  }
+
+  static Future<User?> getUser() async {
+    FirebaseApp firebaseApp = await Firebase.initializeApp();
+    final user = FirebaseAuth.instance.currentUser;
+    return user;
   }
 
   // @override

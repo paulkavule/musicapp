@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
 import 'package:musicapp1/models/playlist_model.dart';
 import 'package:musicapp1/utilities/helpers.dart';
 import 'package:musicapp1/widgets/widgets.dart';
@@ -20,14 +19,15 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
   Widget build(BuildContext context) {
     final int activeSong = ref.watch(playerProvider);
 
-    PlayList playList = Get.arguments ?? PlayList.playList[0];
+    // PlayList playList = Get.arguments; // ?? PlayList.playList[0];
+    PlayList playList = PlayList.playList[0];
     // if (playList.songs == null || playList.songs!.isEmpty) {
     //   // return const NoData(
     //   //     title: 'Ops', message: 'Playlist does not contain any songs');
-
     // }
     // print('Playlist facts ${playList.songs!.length}');
-    var songs = playList.songs!;
+    var songs = playList
+        .songs!; // [...playList.songs!, ...playList.songs!, ...playList.songs!];
     return Container(
       constraints: const BoxConstraints.expand(),
       decoration: BoxDecoration(
@@ -54,6 +54,7 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // MultiMusicPlayer(playList: songs)
               SizedBox(
                   height: MediaQuery.of(context).size.height * 0.7,
                   child: CustomScrollView(
@@ -85,7 +86,8 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
                       ]))
                     ],
                   )),
-              const Spacer(),
+              // const Spacer(),
+
               MultiMusicPlayer(playList: songs)
               // ElevatedButton(onPressed: () {}, child: const Text('Hens'))
             ],
@@ -213,3 +215,52 @@ class PlaylistWidget extends StatelessWidget {
     );
   }
 }
+
+
+// Scaffold(
+//         backgroundColor: Colors.transparent,
+//         appBar: AppBar(
+//           backgroundColor: Colors.transparent,
+//           elevation: 0,
+//           title: const Text('Playlist'),
+//         ),
+//         body: SafeArea(
+//           child: Padding(
+//             padding: const EdgeInsets.all(8.0),
+//             child: Stack(
+//               fit: StackFit.expand,
+//               alignment: Alignment.center,
+//               children: <Widget>[
+//                 Container(
+//                   padding: EdgeInsets.only(
+//                       top: MediaQuery.of(context).size.height * 0.4,
+//                       bottom: 50),
+//                   color: Colors.blue,
+//                   child: ListView.builder(
+//                       shrinkWrap: true,
+//                       // padding: EdgeInsets.all(5),
+//                       scrollDirection: Axis.vertical,
+//                       // physics: const NeverScrollableScrollPhysics(),
+//                       itemCount: songs.length,
+//                       itemBuilder: (context, index) {
+//                         var listSong = songs[index];
+
+//                         return CustomListTile(
+//                             index: index,
+//                             listSong: listSong,
+//                             activeSong: activeSong,
+//                             onTaped: () {
+//                               ref.read(playerProvider.notifier).state = index;
+//                             });
+//                       }),
+//                 ),
+//                 Positioned(
+//                   top: 0,
+//                   child: PlaylistWidget(playList: playList),
+//                 ),
+//                 Positioned(bottom: 0, child: MultiMusicPlayer(playList: songs))
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
