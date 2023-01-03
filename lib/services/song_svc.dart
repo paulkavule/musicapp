@@ -45,7 +45,7 @@ class SongService implements ISongService {
     var songs = await songRepo.getSongs();
     songs = songs.where((sg) => File(sg.url).isValid()).take(count).toList();
     songs.sort((s1, s2) => s1.addDate.compareTo(s2.addDate));
-    print('Returned ${songs.length}, take $count');
+    // print('Returned ${songs.length}, take $count');
     return songs;
   }
 

@@ -36,7 +36,7 @@ DecorationImage getDecorationImage(String filePath) {
 }
 
 Uri getUriResource(String uri) {
-  print('The URI: $uri');
+  // print('The URI: $uri');
   return uri.contains('assets')
       ? Uri.parse('asset:///$uri')
       : Uri.file(

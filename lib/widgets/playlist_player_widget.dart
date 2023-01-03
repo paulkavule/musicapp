@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:musicapp1/dicontainer.dart';
 import 'package:musicapp1/providers/app_provider.dart';
+import 'package:musicapp1/services/music_player.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
 
 import '../models/seekbar_model.dart';
@@ -19,12 +21,12 @@ class PlaylistPlayer extends ConsumerStatefulWidget {
 }
 
 class PlaylistPlayerState extends ConsumerState<PlaylistPlayer> {
-  AudioPlayer? player; //= AudioPlayer();
-
+  IMusicPlayerService get player => getIT<IMusicPlayerService>();
+  int activeSong = 0;
   @override
   void initState() {
     super.initState();
-
+    player.loadSongs(widget.playList, activeSong);
     // if (player != null) {
     //   if (player!.playing) {
     //     player!.stop();
@@ -35,13 +37,13 @@ class PlaylistPlayerState extends ConsumerState<PlaylistPlayer> {
 
   @override
   void dispose() {
-    player?.dispose();
     super.dispose();
   }
 
   Stream<SeekBarDto> get seekBarStream =>
       rxdart.Rx.combineLatest2<Duration, Duration?, SeekBarDto>(
-          player!.positionStream, player!.durationStream, (
+          player.audioPlayer.positionStream, player.audioPlayer.durationStream,
+          (
         Duration pst,
         Duration? dur,
       ) {
@@ -50,22 +52,22 @@ class PlaylistPlayerState extends ConsumerState<PlaylistPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    var activeSong = ref.watch(playerProvider);
-    player = ref.watch(auidoPlayer);
-    print('There is another ${player!.hasNext}');
-    if (player!.hasNext == false) {
-      ref.read(auidoPlayer.notifier).addData(widget.playList, activeSong);
-    }
+    activeSong = ref.watch(playerProvider);
+    // player = ref.watch(auidoPlayer);
+    // print('There is another ${player!.hasNext}');
+    // if (player!.hasNext == false) {
+    //   ref.read(auidoPlayer.notifier).addData(widget.playList, activeSong);
+    // }
 
     ref.listen<int>(playerProvider, (prev, next) async {
-      await player!.seek(const Duration(seconds: 0), index: next);
-      if (player!.playing == false) {
-        player!.play();
+      await player.audioPlayer.seek(const Duration(seconds: 0), index: next);
+      if (player.audioPlayer.playing == false) {
+        player.play();
       }
       // print('player => next index is   $next');
     });
     if (widget.startPlaying) {
-      player!.play();
+      player.play();
     }
     return Container(
       // color: Colors.brown.shade400,
@@ -114,7 +116,7 @@ class PlaylistPlayerState extends ConsumerState<PlaylistPlayer> {
                       position: postionData?.position ?? Duration.zero,
                       duration: postionData?.duration ?? Duration.zero,
                       showTime: false,
-                      onChangEnd: player!.seek,
+                      onChangEnd: player.audioPlayer.seek,
                     );
                   },
                 ),
@@ -125,12 +127,12 @@ class PlaylistPlayerState extends ConsumerState<PlaylistPlayer> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               StreamBuilder<SequenceState?>(
-                  stream: player!.sequenceStateStream,
+                  stream: player.audioPlayer.sequenceStateStream,
                   builder: (context, snapshot) {
                     return IconButton(
                         onPressed: () {
-                          if (player!.hasPrevious) {
-                            player!.seekToPrevious();
+                          if (player.audioPlayer.hasPrevious) {
+                            player.skipPrevious();
                             ref.read(playerProvider.notifier).state--;
                           }
                         },
@@ -143,7 +145,7 @@ class PlaylistPlayerState extends ConsumerState<PlaylistPlayer> {
                 width: 5,
               ),
               StreamBuilder(
-                stream: player!.playerStateStream,
+                stream: player.audioPlayer.playerStateStream,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     final playerState = snapshot.data;
@@ -157,9 +159,9 @@ class PlaylistPlayerState extends ConsumerState<PlaylistPlayer> {
                         margin: const EdgeInsets.all(10.0),
                         child: const CircularProgressIndicator(),
                       );
-                    } else if (player!.playing == false) {
+                    } else if (player.audioPlayer.playing == false) {
                       return IconButton(
-                          onPressed: () => player!.play(),
+                          onPressed: () => player.play(),
                           constraints: const BoxConstraints(),
                           icon: const Icon(
                             Icons.play_circle,
@@ -169,7 +171,7 @@ class PlaylistPlayerState extends ConsumerState<PlaylistPlayer> {
                           padding: const EdgeInsets.all(0.0));
                     } else if (processState != ProcessingState.completed) {
                       return IconButton(
-                          onPressed: () => player!.pause(),
+                          onPressed: () => player.pause(),
                           constraints: const BoxConstraints(),
                           icon: const Icon(
                             Icons.pause_circle,
@@ -180,8 +182,9 @@ class PlaylistPlayerState extends ConsumerState<PlaylistPlayer> {
                     }
                     return IconButton(
                         onPressed: () {
-                          player!.seek(Duration.zero,
-                              index: player!.effectiveIndices!.first);
+                          player.audioPlayer.seek(Duration.zero,
+                              index:
+                                  player.audioPlayer.effectiveIndices!.first);
                           ref.read(playerProvider.notifier).state = 0;
                         },
                         constraints: const BoxConstraints(),
@@ -200,14 +203,14 @@ class PlaylistPlayerState extends ConsumerState<PlaylistPlayer> {
                 width: 5,
               ),
               StreamBuilder<SequenceState?>(
-                  stream: player!.sequenceStateStream,
+                  stream: player.audioPlayer.sequenceStateStream,
                   builder: (context, snapshot) {
                     return IconButton(
                         onPressed: () async {
-                          if (player!.hasNext) {
+                          if (player.audioPlayer.hasNext) {
                             // await player.seek(Duration.zero,
                             //     index: player.nextIndex);
-                            player!.seekToNext();
+                            player.audioPlayer.seekToNext();
                             ref.read(playerProvider.notifier).state++;
                           }
                         },

@@ -8,13 +8,13 @@ import 'package:musicapp1/widgets/widgets.dart';
 
 class PlaylistScreen2 extends ConsumerStatefulWidget {
   PlaylistScreen2({Key? key}) : super(key: key);
-  PlayList playlist = Get.arguments;
+  PlayList playlist = PlayList.playList[0]; //Get.arguments;
   @override
   PlaylistScreen2State createState() => PlaylistScreen2State();
 }
 
 class PlaylistScreen2State extends ConsumerState<PlaylistScreen2> {
-  PlayList playList = PlayList.playList[0];
+  PlayList playList = Get.arguments; // PlayList.playList[0];
   var activeSong = 0;
   @override
   void initState() {

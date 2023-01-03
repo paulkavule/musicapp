@@ -21,7 +21,7 @@ class SongRepository implements ISongRepository {
   Future<void> saveSong(Song song) async {
     // var rowid = await songTb.add(song);
     await songTb.put(song.uuid, song);
-    print('Inserted ${song.uuid}  Date: ${song.addDate}');
+    // print('Inserted ${song.uuid}  Date: ${song.addDate}');
   }
 
   @override

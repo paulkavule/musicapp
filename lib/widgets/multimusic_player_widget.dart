@@ -160,13 +160,13 @@ class MultiMusicPlayerState extends ConsumerState<MultiMusicPlayer> {
                       builder: (context, snapshot) {
                         return IconButton(
                             onPressed: () async {
-                              print('Next button clicked');
+                              // print('Next button clicked');
                               if (player!.hasNext) {
                                 // await player.seek(Duration.zero,
                                 //     index: player.nextIndex);
                                 player!.seekToNext();
                                 ref.read(playerProvider.notifier).state++;
-                                print('Next button selected');
+                                // print('Next button selected');
                               }
                             },
                             icon: const Icon(Icons.skip_next,

@@ -48,8 +48,6 @@ class PlaylistDashboardState extends ConsumerState<PlaylistDashboard> {
                   //     ));
                   await Get.toNamed('/mngplaylist');
                   await playlistSvc.getPlayList().then((value) {
-                    print(
-                        'Data: new: ${value.length} , old: ${playLists.length}');
                     ref.read(appPlayList.notifier).refereshData(value);
                   });
 
@@ -82,7 +80,6 @@ class PlaylistDashboardState extends ConsumerState<PlaylistDashboard> {
                   if (snapshot.hasData == false) {
                     return const Text('Please wait');
                   }
-                  print('Fetched Data: ${playLists.length}');
                   playLists = snapshot.data!;
                   return ListView.builder(
                       itemCount: playLists.length,

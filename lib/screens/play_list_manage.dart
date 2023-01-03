@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mime/mime.dart';
 import 'package:musicapp1/dicontainer.dart';
+import 'package:musicapp1/screens/home_screen.dart';
 // import 'package:musicapp1/models/playlist_model.dart';
 import 'package:musicapp1/services/song_svc.dart';
 // import 'package:permission_handler/permission_handler.dart';
@@ -16,11 +17,42 @@ import '../services/playlist_svc.dart';
 import '../utilities/helpers.dart';
 
 class PlayListManage extends StatelessWidget {
-  const PlayListManage({Key? key}) : super(key: key);
-
+  PlayListManage({Key? key}) : super(key: key);
+  final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+            Colors.brown.shade800.withOpacity(0.8),
+            Colors.brown.shade200.withOpacity(0.8)
+          ])),
+      child: Scaffold(
+          body: Form(
+        key: formKey,
+        child: Column(
+          children: [
+            SizedBox(
+              height: 30,
+            ),
+            TextFormField(
+              onTap: () {
+                print('on Taped:');
+              },
+              decoration: InputDecoration(hintText: 'Email'),
+              validator: (value) {
+                if (value!.trim().isEmpty) {
+                  return 'Email required';
+                }
+              },
+            )
+          ],
+        ),
+      )),
+    );
   }
 }
 
@@ -95,7 +127,7 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
         continue;
       }
 
-      print('Song=> mimetype:$mtype , path: ${file.path}');
+      // print('Song=> mimetype:$mtype , path: ${file.path}');
 
       // print('path1: ${fl.path}');
       // print('path2: ${file.absolute.path}\n\n');
@@ -261,9 +293,9 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
               ),
               TextField(
                   onChanged: (value) => {
-                        // setState(() {
-                        //   playlistName = value;
-                        // })
+                        setState(() {
+                          playlistName = value;
+                        })
                       },
                   style: Theme.of(context)
                       .textTheme
@@ -282,31 +314,9 @@ class _PlayListManageStateScreen extends State<PlayListManageScreen> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
                           borderSide: BorderSide.none))),
-              // TextFormField(
-              //     style: Theme.of(context)
-              //         .textTheme
-              //         .bodyLarge!
-              //         .copyWith(color: Colors.black),
-              //     controller: unameField,
-              //     enabled: enableCtrls,
-              //     onTap: () {},
-              //     decoration: InputDecoration(
-              //         isDense: true,
-              //         filled: true,
-              //         fillColor:
-              //             enableCtrls ? Colors.white : Colors.grey.shade300,
-              //         hintText: 'Playlist name',
-              //         hintStyle: Theme.of(context)
-              //             .textTheme
-              //             .bodyMedium!
-              //             .copyWith(color: Colors.grey.shade400),
-              //         border: OutlineInputBorder(
-              //             borderRadius: BorderRadius.circular(8.0),
-              //             borderSide: BorderSide.none))),
               const SizedBox(
                 height: 30,
               ),
-
               ListView.builder(
                 shrinkWrap: true,
                 itemCount: songList.length,

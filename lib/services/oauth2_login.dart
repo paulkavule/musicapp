@@ -19,14 +19,6 @@ class SignUpApi {
 
   static Future<FirebaseApp> initializeFirebase() async {
     FirebaseApp firebaseApp = await Firebase.initializeApp();
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      try {
-        Get.toNamed('/home', arguments: user);
-      } catch (e) {
-        print(e.toString());
-      }
-    }
 
     return firebaseApp;
   }

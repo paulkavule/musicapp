@@ -42,6 +42,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
         title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           textTheme: Theme.of(context)
               .textTheme
@@ -50,7 +51,7 @@ class MyApp extends StatelessWidget {
         ),
         home: const FirstScreen(),
         getPages: [
-          GetPage(name: "/first", page: () => const FirstScreen()),
+          GetPage(name: "/", page: () => const FirstScreen()),
           GetPage(name: "/home", page: () => HomeScreen()),
           GetPage(name: "/song", page: () => SongScreen()),
           GetPage(name: "/playlist", page: () => PlaylistScreen2()),

@@ -38,7 +38,7 @@ class PlaylistService implements IPlaylistService {
           songList.where((sg) => sg.playList.contains(item.title)).toList();
       item.songs = playSongs;
     }
-    print('get_play_list: ${playList.length}');
+    // print('get_play_list: ${playList.length}');
     return playList;
   }
 

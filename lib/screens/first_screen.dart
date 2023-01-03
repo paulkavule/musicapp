@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -6,12 +7,29 @@ import 'package:musicapp1/services/oauth2_login.dart';
 // import 'package:musicapp1/dicontainer.dart';
 // import 'package:musicapp1/services/oauth2_login.dart';
 
-class FirstScreen extends StatelessWidget {
+class FirstScreen extends StatefulWidget {
   const FirstScreen({Key? key}) : super(key: key);
 
-  // signIn() async {
-  //   await GoogleSigninApi.login();
-  // }
+  @override
+  State<FirstScreen> createState() => _FirstScreenState();
+}
+
+class _FirstScreenState extends State<FirstScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    SignUpApi.initializeFirebase().then((value) {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        try {
+          Get.toNamed('/home', arguments: user);
+        } catch (e) {
+          print(e.toString());
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
